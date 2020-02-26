@@ -1,0 +1,28 @@
+{
+    "name": "ralphschindler/nova-relation-multiselect",
+    "description": "A Nova Multiselect For Relations",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ralph Schindler",
+            "email": "ralph@ralphschindler.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.1.0",
+        "laravel/nova": "^2.0.11"
+    },
+    "autoload": {
+        "psr-4": {
+            "RalphSchindler\\NovaRelationMultiselect\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "RalphSchindler\\NovaRelationMultiselect\\FieldServiceProvider"
+            ]
+        }
+    }
+}
