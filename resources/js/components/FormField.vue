@@ -55,7 +55,7 @@
     },
 
     mounted () {
-      axios.get('/nova-vendor/relation-multiselect/' + this.resourceName + '/' + this.field['relationship_name'])
+      axios.get('/nova-vendor/select-plus/' + this.resourceName + '/' + this.field['relationship_name'])
         .then(resp => {
           this.options = resp.data
           this.isLoading = false

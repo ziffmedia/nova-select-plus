@@ -1,6 +1,6 @@
 <?php
 
-namespace RalphSchindler\NovaRelationMultiselect;
+namespace ZiffMedia\NovaSelectPlus;
 
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -8,7 +8,7 @@ class Controller
 {
     public function options(NovaRequest $request, $resource, $relationship)
     {
-        /** @var RelationMultiselect $field */
+        /** @var SelectPlus $field */
         $field = $request->newResource()
             ->availableFields($request)
             ->where('component', 'relation-multiselect')

@@ -1,12 +1,13 @@
 {
-    "name": "ralphschindler/nova-relation-multiselect",
-    "description": "A Nova Multiselect For Relations",
+    "name": "ziffmedia/nova-select-plus",
+    "description": "A Nova select field for simple and complex select inputs",
     "type": "library",
     "license": "MIT",
+    "keywords": ["vue-select", "laravel", "nova", "select", "ajax"],
     "authors": [
         {
             "name": "Ralph Schindler",
-            "email": "ralph@ralphschindler.com"
+            "email": "ralph.schindler@ziffmedia.com"
         }
     ],
     "require": {
@@ -15,13 +16,13 @@
     },
     "autoload": {
         "psr-4": {
-            "RalphSchindler\\NovaRelationMultiselect\\": "src/"
+            "ZiffMedia\\NovaSelectPlus\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "RalphSchindler\\NovaRelationMultiselect\\FieldServiceProvider"
+                "ZiffMedia\\NovaSelectPlus\\FieldServiceProvider"
             ]
         }
     }

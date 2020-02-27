@@ -1,6 +1,6 @@
 <?php
 
-namespace RalphSchindler\NovaRelationMultiselect;
+namespace ZiffMedia\NovaSelectPlus;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -11,9 +11,9 @@ use Laravel\Nova\Fields\ResourceRelationshipGuesser;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Resource;
 
-class RelationMultiselect extends Field
+class SelectPlus extends Field
 {
-    public $component = 'relation-multiselect';
+    public $component = 'select-plus';
 
     public $relationshipResource = null;
 
@@ -138,7 +138,7 @@ class RelationMultiselect extends Field
     protected function resolveForAttribute($resource)
     {
         if ($this->options === null) {
-            throw new \RuntimeException('For attributes using RelationalMultiselect, options() must be available');
+            throw new \RuntimeException('For attributes using SelectPlus, options() must be available');
         }
 
         $casts = $resource->getCasts();
