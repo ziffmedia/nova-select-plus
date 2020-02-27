@@ -10,6 +10,9 @@
         v-bind:multiple="true"
         v-bind:taggable="true"
         v-bind:loading="isLoading"
+        v-bind:disabled="field.readonly"
+        v-bind:max="field.max_selections"
+        options-limit="10000"
       >
       </multiselect>
     </template>

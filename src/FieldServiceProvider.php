@@ -19,9 +19,12 @@ class FieldServiceProvider extends ServiceProvider
             Nova::style('relation-multiselect-field', __DIR__ . '/../dist/css/field.css');
         });
 
-        Route::group(['middleware' => 'nova', 'prefix' => 'nova-vendor/relation-multiselect', 'namespace' => __NAMESPACE__], function ($route) {
-            $route->get('/{resource}/{relationship}', 'Controller@options');
-        });
+        Route::group(
+            ['middleware' => 'nova', 'prefix' => 'nova-vendor/relation-multiselect', 'namespace' => __NAMESPACE__],
+            function ($route) {
+                $route->get('/{resource}/{relationship}', 'Controller@options');
+            }
+        );
     }
 
     public function register()

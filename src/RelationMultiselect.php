@@ -21,8 +21,12 @@ class RelationMultiselect extends Field
     public $detailLabel = null;
     public $formLabel = 'name';
 
+    public $options = null;
+
     public $valueForIndexDisplay = null;
     public $valueForDetailDisplay = null;
+
+    public $maxSelections = null;
 
     public function __construct($name, $attribute = null, $relationshipResource = null)
     {
@@ -64,6 +68,20 @@ class RelationMultiselect extends Field
         return $this;
     }
 
+    public function maxSelections($maxSelections)
+    {
+        $this->maxSelections = $maxSelections;
+
+        return $this;
+    }
+
+    public function options($options)
+    {
+        $this->options = $options;
+
+        return $this;
+    }
+
     /**
      * @param mixed|Resource|Model $resource
      * @param null $attribute
@@ -73,37 +91,59 @@ class RelationMultiselect extends Field
         // use base functionality to populate $this->value
         parent::resolve($resource, $attribute);
 
-        if (!method_exists($resource, $this->attribute)) {
-            throw new \RuntimeException(get_class($resource) . '::' . $this->attribute . '() must be a configured relational method');
+        // handle setting up values for relations
+        if (method_exists($resource, $this->attribute)) {
+            $this->resolveForRelations($resource);
+
+            return;
         }
 
+        $this->resolveForAttribute($resource);
+    }
+
+    protected function resolveForRelations($resource)
+    {
         $relationQuery = $resource->{$this->attribute}();
 
         if (!$relationQuery instanceof BelongsToMany) {
             throw new \RuntimeException('This field currently only supports MorphsToMany and BelongsToMany');
         }
 
-        // if the value is requested on the index field, we need to roll it up to show something
+        // if the value is requested on the INDEX field, we need to roll it up to show something
         if ($this->indexLabel) {
             $this->valueForIndexDisplay = is_callable($this->indexLabel)
                 ? call_user_func($this->indexLabel, $this, $resource)
                 : $this->value->pluck($this->indexLabel)->implode(', ');
         } else {
             $count = $this->value->count();
+
             $this->valueForIndexDisplay = $count . ' ' . Str::plural(Str::singular($this->name), $count);
         }
 
-        // if the value is requested on the detail field, we need to roll it up to show something
+        // if the value is requested on the DETAIL field, we need to roll it up to show something
         if ($this->detailLabel) {
             $this->valueForDetailDisplay = is_callable($this->detailLabel)
                 ? call_user_func($this->detailLabel, $this, $resource)
                 : $this->value->pluck($this->detailLabel)->implode(', ');
         } else {
             $count = $this->value->count();
+
             $this->valueForDetailDisplay = $count . ' ' . Str::plural(Str::singular($this->name), $count);
         }
 
+        // convert to {key: xxx, label: xxx} format
         $this->value = $this->mapToSelectionValue($this->value);
+    }
+
+    protected function resolveForAttribute($resource)
+    {
+        if ($this->options === null) {
+            throw new \RuntimeException('For attributes using RelationalMultiselect, options() must be available');
+        }
+
+        $casts = $resource->getCasts();
+
+        // @todo do things specific to the kind of cast it is, or throw exception, if no cast, assume its options with string types
     }
 
     protected function fillAttribute(NovaRequest $request, $requestAttribute, $model, $attribute)
@@ -128,7 +168,8 @@ class RelationMultiselect extends Field
         return array_merge(parent::jsonSerialize(), [
             'relationship_name'        => $this->attribute,
             'value_for_index_display'  => $this->valueForIndexDisplay,
-            'value_for_detail_display' => $this->valueForDetailDisplay
+            'value_for_detail_display' => $this->valueForDetailDisplay,
+            'max_selections'           => $this->maxSelections
         ]);
     }
 }
