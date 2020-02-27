@@ -27,6 +27,7 @@ class SelectPlus extends Field
     public $valueForDetailDisplay = null;
 
     public $maxSelections = null;
+    public $ajaxSearchable = null;
 
     public function __construct($name, $attribute = null, $relationshipResource = null)
     {
@@ -75,6 +76,13 @@ class SelectPlus extends Field
         return $this;
     }
 
+    public function ajaxSearchable(callable $queryBuilderCallack)
+    {
+        $this->ajaxSearchable = $queryBuilderCallack;
+
+        return $this;
+    }
+
     public function options($options)
     {
         $this->options = $options;
@@ -112,7 +120,7 @@ class SelectPlus extends Field
         // if the value is requested on the INDEX field, we need to roll it up to show something
         if ($this->indexLabel) {
             $this->valueForIndexDisplay = is_callable($this->indexLabel)
-                ? call_user_func($this->indexLabel, $this, $resource)
+                ? call_user_func($this->indexLabel, $this->value)
                 : $this->value->pluck($this->indexLabel)->implode(', ');
         } else {
             $count = $this->value->count();
@@ -123,7 +131,7 @@ class SelectPlus extends Field
         // if the value is requested on the DETAIL field, we need to roll it up to show something
         if ($this->detailLabel) {
             $this->valueForDetailDisplay = is_callable($this->detailLabel)
-                ? call_user_func($this->detailLabel, $this, $resource)
+                ? call_user_func($this->detailLabel, $this->value)
                 : $this->value->pluck($this->detailLabel)->implode(', ');
         } else {
             $count = $this->value->count();
@@ -166,6 +174,7 @@ class SelectPlus extends Field
     public function jsonSerialize()
     {
         return array_merge(parent::jsonSerialize(), [
+            'ajax_searchable'          => $this->ajaxSearchable !== null,
             'relationship_name'        => $this->attribute,
             'value_for_index_display'  => $this->valueForIndexDisplay,
             'value_for_detail_display' => $this->valueForDetailDisplay,

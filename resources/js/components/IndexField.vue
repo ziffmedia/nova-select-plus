@@ -1,5 +1,5 @@
 <template>
-  <span>{{ field.value_for_index_display }}</span>
+  <span>{{ field.value_for_index_display || '-'}}</span>
 </template>
 
 <script>

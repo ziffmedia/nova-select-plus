@@ -1,6 +1,8 @@
 // Nova Tool CSS
 @import '~vue-multiselect/dist/vue-multiselect.min.css';
 
+@import '~vue-select/src/scss/vue-select.scss';
+
 .multiselect {
   > .multiselect__tags {
     border-color: var(\-\-60);
