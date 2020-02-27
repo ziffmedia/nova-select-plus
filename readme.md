@@ -1,9 +1,9 @@
-# A Nova BelongsToMany Mulitselect Thing
+# Nova Select Plus
 
 ## Installation
 
 ```
-composer require
+composer require ziffmedia/nova-select-plus
 ```
 
 ## Usage
@@ -19,11 +19,11 @@ RelationMultiselect::make('Authors')
 
 ### Immediate term
 
-- rename: "one true multiselect?"
+- ajax *search* for multiselect
 - Static list of options via ->options()
 - Static list of options stored in a json/array column
 - Reordering of Selected options
-- ajax *search* for multiselect
+
 
 #### Research
 

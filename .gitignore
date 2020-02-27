@@ -1,6 +1,5 @@
 /node_modules
 yarn.*
-/webpack.mix.js
 composer.phar
 composer.lock
 phpunit.xml
