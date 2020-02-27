@@ -1,6 +1,6 @@
 <?php
 
-namespace RalphSchindler\NovaRelationMultiselect;
+namespace ZiffMedia\NovaSelectPlus;
 
 use Illuminate\Support\Facades\Route;
 use Laravel\Nova\Http\Requests\NovaRequest;

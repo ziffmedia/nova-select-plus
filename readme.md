@@ -8,7 +8,7 @@ composer require ziffmedia/nova-select-plus
 
 ## Usage
 
-```
+```php
 RelationMultiselect::make('Authors')
     ->usingIndexLabel('name')      // index screen: the attribute you want to use as a label (can be real or dynamic)
     ->usingDetailLabel('name')     // detail screen: '''
