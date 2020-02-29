@@ -4,6 +4,7 @@ namespace ZiffMedia\NovaSelectPlus;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Controller
@@ -21,11 +22,13 @@ class Controller
         $query = $field->relationshipResource::newModel()->newModelQuery();
 
         if ($field->ajaxSearchable !== null && $request->has('search')) {
-            call_user_func($field->ajaxSearchable, $query, $request->get('search'));
+            $return = call_user_func($field->ajaxSearchable, $request->get('search'), $query);
         }
 
         return response()->json($field->mapToSelectionValue(
-            $query->get()
+            (isset($return) && $return instanceof Collection)
+                ? $return
+                : $query->get()
         ));
     }
 }

@@ -20,6 +20,7 @@
     "vue": "^2.5.0",
     "vue-multiselect": "^2.1.6",
     "vue-select": "^3.4.0",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.11",
+    "vuedraggable": "^2.23.2"
   }
 }

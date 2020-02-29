@@ -17,23 +17,36 @@ class SelectPlus extends Field
 
     public $relationshipResource = null;
 
+    public $label = 'name';
+
     public $indexLabel = null;
     public $detailLabel = null;
-    public $formLabel = 'name';
-
-    public $options = null;
 
     public $valueForIndexDisplay = null;
     public $valueForDetailDisplay = null;
 
     public $maxSelections = null;
     public $ajaxSearchable = null;
+    public $reorderable = null;
 
-    public function __construct($name, $attribute = null, $relationshipResource = null)
+    public function __construct($name, $attribute = null, $relationshipResource = null, $label = 'name')
     {
         parent::__construct($name, $attribute);
 
         $this->relationshipResource = $relationshipResource ?? ResourceRelationshipGuesser::guessResource($name);
+
+        if (!class_exists($this->relationshipResource)) {
+            throw new \RuntimeException("Relationship Resource {$this->relationshipResource} is not a valid class");
+        }
+
+        $this->label = $label;
+    }
+
+    public function label($label)
+    {
+        $this->label = $label;
+
+        return $this;
     }
 
     /**
@@ -58,17 +71,6 @@ class SelectPlus extends Field
         return $this;
     }
 
-    /**
-     * @param string|callable $formLabel
-     * @return $this
-     */
-    public function usingFormLabel($formLabel)
-    {
-        $this->formLabel = $formLabel;
-
-        return $this;
-    }
-
     public function maxSelections($maxSelections)
     {
         $this->maxSelections = $maxSelections;
@@ -83,9 +85,9 @@ class SelectPlus extends Field
         return $this;
     }
 
-    public function options($options)
+    public function reorderable(string $orderAttribute)
     {
-        $this->options = $options;
+        $this->reorderable = $orderAttribute;
 
         return $this;
     }
@@ -106,7 +108,9 @@ class SelectPlus extends Field
             return;
         }
 
-        $this->resolveForAttribute($resource);
+        throw new \RuntimeException('Currently attributes are not yet supported');
+
+        // @todo $this->resolveForAttribute($resource);
     }
 
     protected function resolveForRelations($resource)
@@ -128,7 +132,6 @@ class SelectPlus extends Field
             $this->valueForIndexDisplay = $count . ' ' . Str::plural(Str::singular($this->name), $count);
         }
 
-        // if the value is requested on the DETAIL field, we need to roll it up to show something
         if ($this->detailLabel) {
             $this->valueForDetailDisplay = is_callable($this->detailLabel)
                 ? call_user_func($this->detailLabel, $this->value)
@@ -158,27 +161,43 @@ class SelectPlus extends Field
     {
         // returning a function allows this to run after the model has been saved (which is crucial if this is a new model)
         return function () use ($request, $requestAttribute, $model, $attribute) {
-            $values = collect(json_decode($request[$requestAttribute], true))->pluck('key');
+            $values = collect(json_decode($request[$requestAttribute], true));
 
-            $model->{$attribute}()->sync($values);
+            $keyName = $model->getKeyName();
+
+            if ($this->reorderable) {
+                $syncValues = $values->mapWithKeys(function ($value, $index) use ($keyName) {
+                    return [$value[$keyName] => [$this->reorderable => $index + 1]];
+                });
+            } else {
+                $syncValues = $values->pluck($keyName);
+            }
+
+            $model->{$attribute}()->sync($syncValues);
         };
     }
 
     public function mapToSelectionValue(Collection $models)
     {
         return $models->map(function (Model $model) {
-            return ['key' => $model->getKey(), 'label' => $model->{$this->formLabel}]; // todo add order field
+            // todo add order field
+            return [
+                $model->getKeyName() => $model->getKey(),
+                'label' => $model->{$this->label}
+            ];
         });
     }
 
     public function jsonSerialize()
     {
         return array_merge(parent::jsonSerialize(), [
+            'label'                    => $this->label,
             'ajax_searchable'          => $this->ajaxSearchable !== null,
             'relationship_name'        => $this->attribute,
             'value_for_index_display'  => $this->valueForIndexDisplay,
             'value_for_detail_display' => $this->valueForDetailDisplay,
-            'max_selections'           => $this->maxSelections
+            'max_selections'           => $this->maxSelections,
+            'reorderable'              => $this->reorderable !== null
         ]);
     }
 }
