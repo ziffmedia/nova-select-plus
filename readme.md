@@ -59,7 +59,7 @@ SelectPlus::make('Favorite Books', 'favoriteBooks', Books::class) // including t
       })
 ```
 
-### Complex Reordering
+#### Complex Reordering
 
 ```php
   SelectPlus::make('Related Articles', 'relatedArticles', Article::class)
