@@ -8,13 +8,13 @@ composer require ziffmedia/nova-select-plus
 
 ## Description & Use Cases
 
-This Nova component was built to satisfy the use cases just beyond Nova's built-in <select> component. Here are
+This Nova component was built to satisfy the use cases just beyond Nova's built-in `<select>` component. Here are
 some scenarios where you might want `SelectPlus` (which uses `vue-select`) over the simple `Select`:
 
 #### Select For BelongsToMany and MorphsToMany On the Form Screen
 
 The default Nova experience for `BelongsToMany` and `MorphsToMany` is to have a separate UI screen for
-attaching/detaching and syncing relationships through a "Pivot" model. For simple relationships (relaionships that do
+attaching/detaching and syncing relationships through a "Pivot" model. For simple relationships (relationships that do
 not have addition pivot values or the only value in the pivot table is there for ordering), it is benefitial to move
 this Selection to the Form workflow instead of a separate workflow.
 
@@ -39,7 +39,7 @@ SelectPlus::make('Authors')
 SelectPlus::make('Favorite Books', 'favoriteBooks', Books::class) // including the relation method & Nova Resource for relation
 ```
 
-### Options
+### Options & Examples
 
 | Method | Description |
 |--------|-------------|
@@ -50,3 +50,26 @@ SelectPlus::make('Favorite Books', 'favoriteBooks', Books::class) // including t
 | `->maxSelections(integer)` | |
 | `->reorderable()` | |
 
+#### Ajax Search
+
+```php
+  SelectPlus::make('Brands')
+      ->ajaxSearchable(function ($search, $query) {
+          $query->where('name', 'LIKE', '%'.$search.'%')->limit(30);
+      })
+```
+
+### Complex Reordering
+
+```php
+  SelectPlus::make('Related Articles', 'relatedArticles', Article::class)
+      ->label('title')
+      ->hideFromIndex()
+      ->usingDetailLabel(function ($models) {
+          return $models->pluck('title');
+      })
+      ->ajaxSearchable(function ($search, $query) {
+          $query->where('title', 'LIKE', '%' . $search . '%')->limit(15);
+      })
+      ->reorderable('rank')
+```
