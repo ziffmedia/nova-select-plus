@@ -44,8 +44,8 @@ SelectPlus::make('Favorite Books', 'favoriteBooks', Books::class) // including t
 | Method | Description |
 |--------|-------------|
 | `->label($attribute = 'name')` | Default `name` |
-| `->usingIndexLabel($attribute|closure)` | Supply an `$attribute` that will be used to pluck from models and comma separate. Supply a closure to return either a string or array of strings |
-| `->usingDetailLabel($attribute|closure))` | |
+| `->usingIndexLabel($attribute\|closure)` | Supply an `$attribute` that will be used to pluck from models and comma separate. Supply a closure to return either a string or array of strings |
+| `->usingDetailLabel($attribute\|closure)` | |
 | `->ajaxSearchable(callable)` | |
 | `->maxSelections(integer)` | |
 | `->reorderable()` | |
