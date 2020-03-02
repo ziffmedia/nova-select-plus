@@ -89,6 +89,10 @@
       },
 
       handleSearch: debounce(function (search, loading) {
+        if (this.field['ajax_searchable'] == false) {
+          return
+        }
+
         if (!search) {
           this.ajaxSearchNoResults = false
 

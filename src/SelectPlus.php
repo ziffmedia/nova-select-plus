@@ -78,9 +78,9 @@ class SelectPlus extends Field
         return $this;
     }
 
-    public function ajaxSearchable(callable $queryBuilderCallack)
+    public function ajaxSearchable($ajaxSearchable)
     {
-        $this->ajaxSearchable = $queryBuilderCallack;
+        $this->ajaxSearchable = $ajaxSearchable;
 
         return $this;
     }
@@ -129,7 +129,7 @@ class SelectPlus extends Field
         } else {
             $count = $this->value->count();
 
-            $this->valueForIndexDisplay = $count . ' ' . Str::plural(Str::singular($this->name), $count);
+            $this->valueForIndexDisplay = $count . ' ' . $this->name;
         }
 
         if ($this->detailLabel) {
@@ -139,7 +139,7 @@ class SelectPlus extends Field
         } else {
             $count = $this->value->count();
 
-            $this->valueForDetailDisplay = $count . ' ' . Str::plural(Str::singular($this->name), $count);
+            $this->valueForDetailDisplay = $count . ' ' . $this->name;
         }
 
         // convert to {key: xxx, label: xxx} format

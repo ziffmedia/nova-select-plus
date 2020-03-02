@@ -22,7 +22,19 @@ class Controller
         $query = $field->relationshipResource::newModel()->newModelQuery();
 
         if ($field->ajaxSearchable !== null && $request->has('search')) {
-            $return = call_user_func($field->ajaxSearchable, $request->get('search'), $query);
+            $search = $request->get('search');
+            
+            if (is_callable($field->ajaxSearchable)) {
+                $return = call_user_func($field->ajaxSearchable, $search, $query);
+
+                if ($return instanceof Builder) {
+                    $query = $return;
+                }                
+            } elseif (is_string($field->ajaxSearchable)) {
+                $query->where($field->ajaxSearchable, 'LIKE', "%{$search}%");
+            } elseif ($field->ajaxSearchable === true) {
+                $query->where($field->label, 'LIKE', "%{$search}%");
+            }
         }
 
         return response()->json($field->mapToSelectionValue(

@@ -41,35 +41,72 @@ SelectPlus::make('Favorite Books', 'favoriteBooks', Books::class) // including t
 
 ### Options & Examples
 
-| Method | Description |
-|--------|-------------|
-| `->label($attribute = 'name')` | Default `name` |
-| `->usingIndexLabel($attribute\|closure)` | Supply an `$attribute` that will be used to pluck from models and comma separate. Supply a closure to return either a string or array of strings |
-| `->usingDetailLabel($attribute\|closure)` | |
-| `->ajaxSearchable(callable)` | |
-| `->maxSelections(integer)` | |
-| `->reorderable()` | |
+#### `->label($attribute)` Pick a different attribute to use as the label
 
-#### Ajax Search
+`Default: 'name'`
 
-```php
-  SelectPlus::make('Brands')
-      ->ajaxSearchable(function ($search, $query) {
-          $query->where('name', 'LIKE', '%'.$search.'%')->limit(30);
-      })
-```
+#### `->usingIndexLabel()` & `->usingDetailLabel()`
 
-#### Complex Reordering
+Default is to produce a count of the number of items on the index and detail screen
+
+![alt text](https://github.com/ziffmedia/nova-select-plus/raw/master/docs/1-default.png "Default Index")
+
+If a *string* name is provided, the name attribute is plucked and comma joined:
 
 ```php
-  SelectPlus::make('Related Articles', 'relatedArticles', Article::class)
-      ->label('title')
-      ->hideFromIndex()
-      ->usingDetailLabel(function ($models) {
-          return $models->pluck('title');
-      })
-      ->ajaxSearchable(function ($search, $query) {
-          $query->where('title', 'LIKE', '%' . $search . '%')->limit(15);
-      })
-      ->reorderable('rank')
+SelectPlus::make('States Lived In', 'statesLivedIn', State::class)
+  ->usingIndexLabel('name'),
 ```
+
+![alt text](https://github.com/ziffmedia/nova-select-plus/raw/master/docs/2-usingIndexLable-string.png "string and comma separated")
+
+If a closure is provided, it will be called, and the value will be utilized.  If the value is a string, it will be placed:
+
+```php
+SelectPlus::make('States Lived In', 'statesLivedIn', State::class)
+  ->usingIndexLabel(fn($models) => $models->first()->name ?? ''),
+```
+
+![alt text](https://github.com/ziffmedia/nova-select-plus/raw/master/docs/3-usingIndexLable-callback.png "return just the first name")
+
+If an array is returned, the Index and Detail screens will produce a `<ol>` or `<ul>` list:
+
+```php
+SelectPlus::make('States Lived In', 'statesLivedIn', State::class)
+  ->usingIndexLabel(fn($models) => $models->pluck('name')),
+```
+
+![alt text](https://github.com/ziffmedia/nova-select-plus/raw/master/docs/4-usingDetailLabel-array.png "array of values")
+
+#### `->reorderable($pivotOrderAttribute)` - Ability to reorder multiple selects
+
+```php
+    // assuming in the User model:
+    public function statesVisited()
+    {
+        return $this->belongsToMany(State::class, 'state_user_visited')
+            ->withPivot('order')
+            ->orderBy('order')
+            ->withTimestamps();
+    }
+
+    // inside the Nova resource:
+    SelectPlus::make('States Lived In', 'statesLivedIn', State::class)
+        ->reorderable('order'),
+```
+
+![alt text](https://github.com/ziffmedia/nova-select-plus/raw/master/docs/5-reorderable.gif "reorder a list")
+
+#### `->ajaxSearchable(string|closure|true)` Ajax search for values
+
+Given a string, models will be search the resources via the provided attribute using WHERE LIKE. Given a callback,
+returning a Collection will populate the dropdown:
+
+```php
+    SelectPlus::make('States Visited', 'statesVisited', State::class)
+        ->ajaxSearchable(function ($search) {
+            return StateModel::where('name', 'LIKE', "%{$search}%")->limit(5);
+        })
+```
+
+![alt text](https://github.com/ziffmedia/nova-select-plus/raw/master/docs/6-ajaxSearchable.gif "reorder a list")
