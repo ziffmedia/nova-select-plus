@@ -1,12 +1,19 @@
 // Nova Tool CSS
-@import '~vue-multiselect/dist/vue-multiselect.min.css';
 
 @import '~vue-select/src/scss/vue-select.scss';
 
-.multiselect {
-  > .multiselect__tags {
-    border-color: var(\-\-60);
-    border-radius: 0.5rem;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.05);
-  }
+.nova-select-plus-vs .vs__selected {
+  background: var(--20);
+  border: 1px solid var(--primary-dark);
+  color: var(--primary-dark);
+}
+
+.nova-select-plus-vd .vd__item {
+  display: block;
+  border-radius: 4px;
+  background: var(--20);
+  border: 1px solid var(--primary-dark);
+  color: var(--primary-dark);
+  margin: 4px 2px 0;
+  padding: 0 .25em;
 }

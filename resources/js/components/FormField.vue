@@ -3,6 +3,7 @@
     <template slot="field">
       <span v-if="!isInReorderMode">
         <v-select
+          class="nova-select-plus-vs"
           v-model:value="selected"
           v-bind:options="options"
           v-bind:loading="isLoading"
@@ -23,20 +24,19 @@
       </span>
       <span v-else>
         <v-draggable
+          class="nova-select-plus-vd"
           v-model="selected"
           v-on:start="dragging = true"
           v-on:end="dragging = false"
-          tag="ol"
           >
-            <li v-for="(item, index) in selected" v-bind:key="item.id">
-              <p>
-                {{ item.label }}
-              </p>
-            </li>
+            <span class="vd__item" v-for="(item, index) in selected" v-bind:key="item.id">
+              {{ index + 1 }}. {{ item.label }}
+              <svg width="16" class="float-right" aria-hidden="true" focusable="false" data-prefix="far" data-icon="grip-lines" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M432 288H16c-8.8 0-16 7.2-16 16v16c0 8.8 7.2 16 16 16h416c8.8 0 16-7.2 16-16v-16c0-8.8-7.2-16-16-16zm0-112H16c-8.8 0-16 7.2-16 16v16c0 8.8 7.2 16 16 16h416c8.8 0 16-7.2 16-16v-16c0-8.8-7.2-16-16-16z"></path></svg>
+            </span>
         </v-draggable>
       </span>
 
-      <span v-if="field.reorderable" class="w-full text-right text-sm">
+      <span v-if="field.reorderable" class="w-full text-right text-sm ml-3">
         <a v-if="!isInReorderMode" href="#" v-on:click.prevent="isInReorderMode = true">
           Reorder
         </a>
@@ -131,11 +131,3 @@
     }
   }
 </script>
-
-<style>
-  .vs__selected {
-    border: 1px solid var(--primary-dark) !important;
-    background: var(--20) !important; /* #D2CBDC */
-    color: var(--primary-dark) !important;
-  }
-</style>
