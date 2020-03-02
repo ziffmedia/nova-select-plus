@@ -58,7 +58,7 @@ SelectPlus::make('States Lived In', 'statesLivedIn', State::class)
   ->usingIndexLabel('name'),
 ```
 
-![alt text](https://github.com/ziffmedia/nova-select-plus/raw/master/docs/2-usingIndexLable-string.png "string and comma separated")
+![alt text](https://github.com/ziffmedia/nova-select-plus/raw/master/docs/2-usingIndexLabel-string.png "string and comma separated")
 
 If a closure is provided, it will be called, and the value will be utilized.  If the value is a string, it will be placed:
 
@@ -67,7 +67,7 @@ SelectPlus::make('States Lived In', 'statesLivedIn', State::class)
   ->usingIndexLabel(fn($models) => $models->first()->name ?? ''),
 ```
 
-![alt text](https://github.com/ziffmedia/nova-select-plus/raw/master/docs/3-usingIndexLable-callback.png "return just the first name")
+![alt text](https://github.com/ziffmedia/nova-select-plus/raw/master/docs/3-usingIndexLabel-callback.png "return just the first name")
 
 If an array is returned, the Index and Detail screens will produce a `<ol>` or `<ul>` list:
 
