@@ -34,9 +34,14 @@ time, to populate a pivot value useful for ordering relations.
 ## Usage
 
 ```php
-SelectPlus::make('Authors')
+    // setup model like normal:
+    public function statesLivedIn()
+    {
+        return $this->belongsToMany(State::class, 'state_user_lived_in')->withTimestamps();
+    }
 
-SelectPlus::make('Favorite Books', 'favoriteBooks', Books::class) // including the relation method & Nova Resource for relation
+    // add Nova Resource Field
+    SelectPlus::make('States Lived In', 'statesLivedIn', State::class),
 ```
 
 ### Options & Examples
@@ -44,6 +49,11 @@ SelectPlus::make('Favorite Books', 'favoriteBooks', Books::class) // including t
 #### `->label($attribute)` Pick a different attribute to use as the label
 
 `Default: 'name'`
+
+```php
+SelectPlus::make('States Lived In', 'statesLivedIn', State::class)
+  ->label('code')
+```
 
 #### `->usingIndexLabel()` & `->usingDetailLabel()`
 
