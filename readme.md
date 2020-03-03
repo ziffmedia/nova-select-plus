@@ -8,6 +8,8 @@ composer require ziffmedia/nova-select-plus
 
 ## Description & Use Cases
 
+![alt text](https://github.com/ziffmedia/nova-select-plus/raw/master/docs/0-intro.gif "Intro Gif")
+
 This Nova component was built to satisfy the use cases just beyond Nova's built-in `<select>` component. Here are
 some scenarios where you might want `SelectPlus` (which uses `vue-select`) over the simple `Select`:
 
