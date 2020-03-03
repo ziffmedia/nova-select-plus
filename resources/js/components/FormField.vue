@@ -36,11 +36,11 @@
         </v-draggable>
       </span>
 
-      <span v-if="field.reorderable" class="w-full text-right text-sm ml-3">
-        <a v-if="!isInReorderMode" href="#" v-on:click.prevent="isInReorderMode = true">
+      <span v-if="field.reorderable" class="float-right text-sm ml-3 border-1 mt-2 mr-4">
+        <a v-if="!isInReorderMode" v-on:click.prevent="isInReorderMode = true" class="text-primary dim no-underline" href="#">
           Reorder
         </a>
-        <a v-else href="#" v-on:click.prevent="isInReorderMode = false">
+        <a v-else class="text-primary dim no-underline" v-on:click.prevent="isInReorderMode = false" href="#">
           Finish Reordering
         </a>
       </span>
