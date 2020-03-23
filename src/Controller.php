@@ -19,7 +19,7 @@ class Controller
             ->first();
 
         /** @var Builder $model */
-        $query = $field->relationshipResource::newModel()->newModelQuery();
+        $query = $field->relationshipResource::newModel()->newQuery();
 
         if ($field->ajaxSearchable !== null && $request->has('search')) {
             $search = $request->get('search');
