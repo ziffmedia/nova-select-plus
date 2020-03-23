@@ -99,9 +99,15 @@
           return
         }
 
-        loading(true)
+        loading(true);
 
-        axios.get('/nova-vendor/select-plus/' + this.resourceName + '/' + this.field['relationship_name'] + '?search=' + search)
+        let url = '/nova-vendor/select-plus/' + this.resourceName + '/' + this.field['relationship_name'],
+            query = {
+              search: search,
+              resourceId: this.resourceId
+            };
+
+        axios.get(url, {params: query})
           .then(resp => {
             this.options = resp.data
 

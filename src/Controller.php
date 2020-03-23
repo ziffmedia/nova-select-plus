@@ -23,9 +23,10 @@ class Controller
 
         if ($field->ajaxSearchable !== null && $request->has('search')) {
             $search = $request->get('search');
+            $resourceId = $request->get('resourceId');
             
             if (is_callable($field->ajaxSearchable)) {
-                $return = call_user_func($field->ajaxSearchable, $search, $query);
+                $return = call_user_func($field->ajaxSearchable, $search, $query, $resourceId);
 
                 if ($return instanceof Builder) {
                     $query = $return;
