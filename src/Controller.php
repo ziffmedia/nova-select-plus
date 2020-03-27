@@ -4,11 +4,21 @@ namespace ZiffMedia\NovaSelectPlus;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Application;
+use Illuminate\Routing\RouteDependencyResolverTrait;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use ReflectionFunction;
 
 class Controller
 {
+    protected $application;
+
+    public function __construct(Application $application)
+    {
+        $this->application = $application;
+    }
+
     public function options(NovaRequest $request, $resource, $relationship)
     {
         /** @var SelectPlus $field */
@@ -23,14 +33,18 @@ class Controller
 
         if ($field->ajaxSearchable !== null && $request->has('search')) {
             $search = $request->get('search');
-            $resourceId = $request->get('resourceId');
-            
+
             if (is_callable($field->ajaxSearchable)) {
-                $return = call_user_func($field->ajaxSearchable, $search, $query, $resourceId);
+                $return = $this->application->call($field->ajaxSearchable, [
+                    'query'      => $query,
+                    'search'     => $search,
+                    'resourceId' => $request->get('resourceId'),
+                    'request'    => $request,
+                ]);
 
                 if ($return instanceof Builder) {
                     $query = $return;
-                }                
+                }
             } elseif (is_string($field->ajaxSearchable)) {
                 $query->where($field->ajaxSearchable, 'LIKE', "%{$search}%");
             } elseif ($field->ajaxSearchable === true) {

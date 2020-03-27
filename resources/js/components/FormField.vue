@@ -99,24 +99,27 @@
           return
         }
 
-        loading(true);
+        loading(true)
 
-        let url = '/nova-vendor/select-plus/' + this.resourceName + '/' + this.field['relationship_name'],
-            query = {
-              search: search,
-              resourceId: this.resourceId
-            };
-
-        axios.get(url, {params: query})
+        axios.get('/nova-vendor/select-plus/' + this.resourceName + '/' + this.field['relationship_name'], {
+            params: {search: search, resourceId: this.resourceId}
+          })
           .then(resp => {
             this.options = resp.data
 
-            if (this.options.length == 0) {
+            if (this.options.length === 0) {
               this.ajaxSearchNoResults = true
             }
 
             loading(false)
           })
+          .catch(err => {
+            console.error(err)
+
+            loading(false)
+          })
+
+        return true
       }, 500),
 
       fill (formData) {
