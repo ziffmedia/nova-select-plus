@@ -21,6 +21,7 @@ class SelectPlus extends Field
 
     public $indexLabel = null;
     public $detailLabel = null;
+    public $editLabel = null;
 
     public $valueForIndexDisplay = null;
     public $valueForDetailDisplay = null;
@@ -67,6 +68,17 @@ class SelectPlus extends Field
     public function usingDetailLabel($detailLabel)
     {
         $this->detailLabel = $detailLabel;
+
+        return $this;
+    }
+
+    /**
+     * @param string|callable $editLabel
+     * @return $this
+     */
+    public function usingEditLabel($editLabel)
+    {
+        $this->editLabel = $editLabel;
 
         return $this;
     }
@@ -183,7 +195,7 @@ class SelectPlus extends Field
             // todo add order field
             return [
                 $model->getKeyName() => $model->getKey(),
-                'label' => $model->{$this->label}
+                'label' => $this->getEditLabel($model)
             ];
         });
     }
@@ -199,6 +211,19 @@ class SelectPlus extends Field
             'max_selections'           => $this->maxSelections,
             'reorderable'              => $this->reorderable !== null
         ]);
+    }
+
+    protected function getEditLabel($model)
+    {
+        if (is_callable($this->editLabel)) {
+            return call_user_func($this->editLabel, $model, $this->label);
+        }
+
+        if (is_string($this->editLabel)) {
+            return $model->{$this->editLabel};
+        }
+
+        return $model->{$this->label};
     }
 }
 
