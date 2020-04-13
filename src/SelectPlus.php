@@ -210,7 +210,6 @@ class SelectPlus extends Field
             return ($this->label)($model);
         }
 
-
         return $model->{$this->label};
     }
 }
