@@ -39,7 +39,7 @@ class SelectPlus extends Field
             throw new \RuntimeException("Relationship Resource {$this->relationshipResource} is not a valid class");
         }
 
-        $this->label = $label;
+        $this->label($label);
     }
 
     public function label($label)
@@ -133,7 +133,7 @@ class SelectPlus extends Field
         } else {
             $count = $this->value->count();
 
-            $this->valueForIndexDisplay = $count . ' ' . $this->name;
+            $this->valueForIndexDisplay = $count . ' ' . $this->name; // example: "5 states"
         }
 
         if ($this->detailLabel) {
