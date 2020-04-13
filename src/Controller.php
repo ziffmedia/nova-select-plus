@@ -3,12 +3,9 @@
 namespace ZiffMedia\NovaSelectPlus;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Application;
-use Illuminate\Routing\RouteDependencyResolverTrait;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use ReflectionFunction;
 
 class Controller
 {

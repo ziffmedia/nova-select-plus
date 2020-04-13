@@ -5,7 +5,7 @@ namespace ZiffMedia\NovaSelectPlus;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Str;
+use InvalidArgumentException;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\ResourceRelationshipGuesser;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -44,6 +44,10 @@ class SelectPlus extends Field
 
     public function label($label)
     {
+        if (!(is_string($label) || is_callable($label))) {
+            throw new InvalidArgumentException('label() must be a string or callable');
+        }
+
         $this->label = $label;
 
         return $this;
@@ -183,7 +187,7 @@ class SelectPlus extends Field
             // todo add order field
             return [
                 $model->getKeyName() => $model->getKey(),
-                'label' => $model->{$this->label}
+                'label' => $this->labelize($model)
             ];
         });
     }
@@ -191,7 +195,6 @@ class SelectPlus extends Field
     public function jsonSerialize()
     {
         return array_merge(parent::jsonSerialize(), [
-            'label'                    => $this->label,
             'ajax_searchable'          => $this->ajaxSearchable !== null,
             'relationship_name'        => $this->attribute,
             'value_for_index_display'  => $this->valueForIndexDisplay,
@@ -199,6 +202,16 @@ class SelectPlus extends Field
             'max_selections'           => $this->maxSelections,
             'reorderable'              => $this->reorderable !== null
         ]);
+    }
+
+    protected function labelize(Model $model)
+    {
+        if (is_callable($this->label)) {
+            return ($this->label)($model);
+        }
+
+
+        return $model->{$this->label};
     }
 }
 
