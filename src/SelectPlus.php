@@ -10,6 +10,7 @@ use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\ResourceRelationshipGuesser;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Resource;
+use RuntimeException;
 
 class SelectPlus extends Field
 {
@@ -36,7 +37,7 @@ class SelectPlus extends Field
         $this->relationshipResource = $relationshipResource ?? ResourceRelationshipGuesser::guessResource($name);
 
         if (!class_exists($this->relationshipResource)) {
-            throw new \RuntimeException("Relationship Resource {$this->relationshipResource} is not a valid class");
+            throw new RuntimeException("Relationship Resource {$this->relationshipResource} is not a valid class");
         }
 
         $this->label($label);
@@ -105,6 +106,12 @@ class SelectPlus extends Field
         // use base functionality to populate $this->value
         parent::resolve($resource, $attribute);
 
+        if ($this->ajaxSearchable && !is_callable($this->ajaxSearchable) && is_callable($this->label)) {
+            throw new RuntimeException('"' . $this->name . '" as a ' . __CLASS__
+                . ' has a dynamic (function) for label(), when using ajaxSearchable() and label(fn), ajaxSearchable() must also be dynamic (function).'
+            );
+        }
+
         // handle setting up values for relations
         if (method_exists($resource, $this->attribute)) {
             $this->resolveForRelations($resource);
@@ -112,7 +119,7 @@ class SelectPlus extends Field
             return;
         }
 
-        throw new \RuntimeException('Currently attributes are not yet supported');
+        throw new RuntimeException('Currently attributes are not yet supported');
 
         // @todo $this->resolveForAttribute($resource);
     }
@@ -122,7 +129,7 @@ class SelectPlus extends Field
         $relationQuery = $resource->{$this->attribute}();
 
         if (!$relationQuery instanceof BelongsToMany) {
-            throw new \RuntimeException('This field currently only supports MorphsToMany and BelongsToMany');
+            throw new RuntimeException('This field currently only supports MorphsToMany and BelongsToMany');
         }
 
         // if the value is requested on the INDEX field, we need to roll it up to show something
@@ -153,7 +160,7 @@ class SelectPlus extends Field
     protected function resolveForAttribute($resource)
     {
         if ($this->options === null) {
-            throw new \RuntimeException('For attributes using SelectPlus, options() must be available');
+            throw new RuntimeException('For attributes using SelectPlus, options() must be available');
         }
 
         $casts = $resource->getCasts();
