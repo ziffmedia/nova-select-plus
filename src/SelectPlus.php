@@ -5,11 +5,12 @@ namespace ZiffMedia\NovaSelectPlus;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Str;
+use InvalidArgumentException;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\ResourceRelationshipGuesser;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Resource;
+use RuntimeException;
 
 class SelectPlus extends Field
 {
@@ -36,14 +37,18 @@ class SelectPlus extends Field
         $this->relationshipResource = $relationshipResource ?? ResourceRelationshipGuesser::guessResource($name);
 
         if (!class_exists($this->relationshipResource)) {
-            throw new \RuntimeException("Relationship Resource {$this->relationshipResource} is not a valid class");
+            throw new RuntimeException("Relationship Resource {$this->relationshipResource} is not a valid class");
         }
 
-        $this->label = $label;
+        $this->label($label);
     }
 
     public function label($label)
     {
+        if (!(is_string($label) || is_callable($label))) {
+            throw new InvalidArgumentException('label() must be a string or callable');
+        }
+
         $this->label = $label;
 
         return $this;
@@ -101,6 +106,12 @@ class SelectPlus extends Field
         // use base functionality to populate $this->value
         parent::resolve($resource, $attribute);
 
+        if ($this->ajaxSearchable && !is_callable($this->ajaxSearchable) && is_callable($this->label)) {
+            throw new RuntimeException('"' . $this->name . '" as a ' . __CLASS__
+                . ' has a dynamic (function) for label(), when using ajaxSearchable() and label(fn), ajaxSearchable() must also be dynamic (function).'
+            );
+        }
+
         // handle setting up values for relations
         if (method_exists($resource, $this->attribute)) {
             $this->resolveForRelations($resource);
@@ -108,7 +119,7 @@ class SelectPlus extends Field
             return;
         }
 
-        throw new \RuntimeException('Currently attributes are not yet supported');
+        throw new RuntimeException('Currently attributes are not yet supported');
 
         // @todo $this->resolveForAttribute($resource);
     }
@@ -118,7 +129,7 @@ class SelectPlus extends Field
         $relationQuery = $resource->{$this->attribute}();
 
         if (!$relationQuery instanceof BelongsToMany) {
-            throw new \RuntimeException('This field currently only supports MorphsToMany and BelongsToMany');
+            throw new RuntimeException('This field currently only supports MorphsToMany and BelongsToMany');
         }
 
         // if the value is requested on the INDEX field, we need to roll it up to show something
@@ -129,7 +140,7 @@ class SelectPlus extends Field
         } else {
             $count = $this->value->count();
 
-            $this->valueForIndexDisplay = $count . ' ' . $this->name;
+            $this->valueForIndexDisplay = $count . ' ' . $this->name; // example: "5 states"
         }
 
         if ($this->detailLabel) {
@@ -149,7 +160,7 @@ class SelectPlus extends Field
     protected function resolveForAttribute($resource)
     {
         if ($this->options === null) {
-            throw new \RuntimeException('For attributes using SelectPlus, options() must be available');
+            throw new RuntimeException('For attributes using SelectPlus, options() must be available');
         }
 
         $casts = $resource->getCasts();
@@ -183,7 +194,7 @@ class SelectPlus extends Field
             // todo add order field
             return [
                 $model->getKeyName() => $model->getKey(),
-                'label' => $model->{$this->label}
+                'label' => $this->labelize($model)
             ];
         });
     }
@@ -191,7 +202,6 @@ class SelectPlus extends Field
     public function jsonSerialize()
     {
         return array_merge(parent::jsonSerialize(), [
-            'label'                    => $this->label,
             'ajax_searchable'          => $this->ajaxSearchable !== null,
             'relationship_name'        => $this->attribute,
             'value_for_index_display'  => $this->valueForIndexDisplay,
@@ -199,6 +209,15 @@ class SelectPlus extends Field
             'max_selections'           => $this->maxSelections,
             'reorderable'              => $this->reorderable !== null
         ]);
+    }
+
+    protected function labelize(Model $model)
+    {
+        if (is_callable($this->label)) {
+            return ($this->label)($model);
+        }
+
+        return $model->{$this->label};
     }
 }
 

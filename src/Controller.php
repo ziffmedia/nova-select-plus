@@ -3,12 +3,10 @@
 namespace ZiffMedia\NovaSelectPlus;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Application;
-use Illuminate\Routing\RouteDependencyResolverTrait;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use ReflectionFunction;
+use RuntimeException;
 
 class Controller
 {
@@ -48,7 +46,12 @@ class Controller
             } elseif (is_string($field->ajaxSearchable)) {
                 $query->where($field->ajaxSearchable, 'LIKE', "%{$search}%");
             } elseif ($field->ajaxSearchable === true) {
-                $query->where($field->label, 'LIKE', "%{$search}%");
+                if (is_string($field->label)) {
+                    $query->where($field->label, 'LIKE', "%{$search}%");
+                } else {
+                    // this should never happen as this situation should be caught in the resolve() of the SelectNova field
+                    throw new RuntimeException('Something went wrong ¯\_(ツ)_/¯');
+                }
             }
         }
 
