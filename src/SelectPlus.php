@@ -174,7 +174,7 @@ class SelectPlus extends Field
         return function () use ($request, $requestAttribute, $model, $attribute) {
             $values = collect(json_decode($request[$requestAttribute], true));
 
-            $keyName = $model->getKeyName();
+            $keyName = ($this->relationshipResource)::newModel()->getKeyName();
 
             if ($this->reorderable) {
                 $syncValues = $values->mapWithKeys(function ($value, $index) use ($keyName) {
