@@ -26,6 +26,7 @@ class SelectPlus extends Field
     public $valueForIndexDisplay = null;
     public $valueForDetailDisplay = null;
 
+    public $optionsQuery = null;
     public $maxSelections = null;
     public $ajaxSearchable = null;
     public $reorderable = null;
@@ -72,6 +73,13 @@ class SelectPlus extends Field
     public function usingDetailLabel($detailLabel)
     {
         $this->detailLabel = $detailLabel;
+
+        return $this;
+    }
+
+    public function optionsQuery(callable $optionsQuery)
+    {
+        $this->optionsQuery = $optionsQuery;
 
         return $this;
     }

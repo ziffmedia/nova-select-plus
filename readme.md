@@ -48,7 +48,7 @@ time, to populate a pivot value useful for ordering relations.
 
 ### Options & Examples
 
-#### `->label($attribute)` Pick a different attribute to use as the label
+#### `->label(string|closure $attribute)` Pick a different attribute to use as the label
 
 `Default: 'name'`
 
@@ -90,7 +90,7 @@ SelectPlus::make('States Lived In', 'statesLivedIn', State::class)
 
 ![alt text](https://github.com/ziffmedia/nova-select-plus/raw/master/docs/4-usingDetailLabel-array.png "array of values")
 
-#### `->reorderable($pivotOrderAttribute)` - Ability to reorder multiple selects
+#### `->reorderable(string $pivotOrderAttribute)` - Ability to reorder multiple selects
 
 ```php
     // assuming in the User model:
@@ -108,6 +108,18 @@ SelectPlus::make('States Lived In', 'statesLivedIn', State::class)
 ```
 
 ![alt text](https://github.com/ziffmedia/nova-select-plus/raw/master/docs/5-reorderable.gif "reorder a list")
+
+#### `->optionsQuery(closure)` - Ability to apply changes to options query object
+
+```php
+    // inside the Nova resource (exclude all states that start with C)
+    SelectPlus::make('States Lived In', 'statesLivedIn', State::class)
+        ->optionsQuery(function (Builder $query) {
+            $query->where('name', 'NOT LIKE', 'C%');
+        })
+```
+
+* Note: this will apply before any `ajaxSearchable()` functionality, it will not replace it but be applied along with `ajaxSearchable()` if it exists
 
 #### `->ajaxSearchable(string|closure|true)` Ajax search for values
 
