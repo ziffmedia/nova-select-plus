@@ -135,12 +135,6 @@ class SelectPlus extends Field
 
     protected function resolveForRelations($resource)
     {
-        $relationQuery = $resource->{$this->attribute}();
-
-        if (!$relationQuery instanceof BelongsToMany) {
-            throw new RuntimeException('This field currently only supports MorphsToMany and BelongsToMany');
-        }
-
         // if the value is requested on the INDEX field, we need to roll it up to show something
         if ($this->indexLabel) {
             $this->valueForIndexDisplay = is_callable($this->indexLabel)

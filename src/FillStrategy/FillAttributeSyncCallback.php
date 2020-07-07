@@ -3,6 +3,7 @@
 namespace ZiffMedia\NovaSelectPlus\FillStrategy;
 
 use Illuminate\Support\Collection;
+use RuntimeException;
 
 class FillAttributeSyncCallback
 {
@@ -33,7 +34,22 @@ class FillAttributeSyncCallback
             $syncValues = $this->fillAttributeValues->pluck($keyName);
         }
 
-        $this->model->{$this->attribute}()->sync($syncValues);
+        if (!is_callable([$this->model, $this->attribute])) {
+            throw new RuntimeException(
+                "{$this->model}::{$this->attribute} must be a relation method to use " . __CLASS__
+                . '; maybe you want to change your model to have a relation or implement your own fillUsing()?'
+            );
+        }
+
+        $relation = $this->model->{$this->attribute}();
+
+        if (!method_exists($relation, 'sync')) {
+            throw new RuntimeException(
+                "{$this->model}::{$this->attribute} does not appear to model a BelongsToMany or MorphsToMany"
+            );
+        }
+
+        $relation->sync($syncValues);
     }
 }
 
