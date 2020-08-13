@@ -20,6 +20,12 @@
             </span>
             <span v-else>Sorry, no matching options!</span>
           </template>
+          <template v-slot:option="option">
+            <span v-html="option.label"></span>
+          </template>
+          <template v-slot:selected-option="option">
+            <span v-html="option.label"></span>
+          </template>
         </v-select>
       </span>
       <span v-else>
