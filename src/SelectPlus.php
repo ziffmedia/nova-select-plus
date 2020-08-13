@@ -2,9 +2,10 @@
 
 namespace ZiffMedia\NovaSelectPlus;
 
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Collection;
 use InvalidArgumentException;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\ResourceRelationshipGuesser;
@@ -134,12 +135,6 @@ class SelectPlus extends Field
 
     protected function resolveForRelations($resource)
     {
-        $relationQuery = $resource->{$this->attribute}();
-
-        if (!$relationQuery instanceof BelongsToMany) {
-            throw new RuntimeException('This field currently only supports MorphsToMany and BelongsToMany');
-        }
-
         // if the value is requested on the INDEX field, we need to roll it up to show something
         if ($this->indexLabel) {
             $this->valueForIndexDisplay = is_callable($this->indexLabel)
@@ -178,25 +173,23 @@ class SelectPlus extends Field
 
     protected function fillAttribute(NovaRequest $request, $requestAttribute, $model, $attribute)
     {
-        // returning a function allows this to run after the model has been saved (which is crucial if this is a new model)
-        return function () use ($request, $requestAttribute, $model, $attribute) {
-            $values = collect(json_decode($request[$requestAttribute], true));
+        if (isset($this->fillCallback)) {
+            return call_user_func(
+                $this->fillCallback, $request, $model, $attribute, $requestAttribute
+            );
+        }
 
-            $keyName = ($this->relationshipResource)::newModel()->getKeyName();
-
-            if ($this->reorderable) {
-                $syncValues = $values->mapWithKeys(function ($value, $index) use ($keyName) {
-                    return [$value[$keyName] => [$this->reorderable => $index + 1]];
-                });
-            } else {
-                $syncValues = $values->pluck($keyName);
-            }
-
-            $model->{$attribute}()->sync($syncValues);
-        };
+        // returning an invokable allows this to run after the model has been saved (which is crucial if this is a new model)
+        return new FillStrategy\FillAttributeSyncCallback(
+            $this->relationshipResource,
+            new Collection(json_decode($request[$requestAttribute], true)),
+            $model,
+            $attribute,
+            $this->reorderable
+        );
     }
 
-    public function mapToSelectionValue(Collection $models)
+    public function mapToSelectionValue(EloquentCollection $models)
     {
         return $models->map(function (Model $model) {
             // todo add order field
