@@ -57,6 +57,14 @@ SelectPlus::make('States Lived In', 'statesLivedIn', State::class)
   ->label('code')
 ```
 
+If a closure is provided, it will be called and teh value can be utilized. Additionally, the output may be html as the component will `v-html` the output on the frontend:
+
+```php
+// Using php 7.4 short functions:
+SelectPlus::make('States Visited', 'statesVisited', State::class)
+    ->label(fn ($state) => $state->name . " <span class=\"text-xs\">({$state->code})</span>")
+```
+
 #### `->usingIndexLabel()` & `->usingDetailLabel()`
 
 Default is to produce a count of the number of items on the index and detail screen
