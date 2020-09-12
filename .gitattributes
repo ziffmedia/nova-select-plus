@@ -11,3 +11,4 @@
 /tests              export-ignore
 /.editorconfig      export-ignore
 /docs               export-ignore
+/demo               export-ignore

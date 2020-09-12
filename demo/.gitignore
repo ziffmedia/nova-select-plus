@@ -1,0 +1,7 @@
+composer.json
+composer.lock
+/vendor
+/nova
+/public/vendor
+/resources/lang/vendor
+/resources/views/vendor

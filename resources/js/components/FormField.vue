@@ -20,6 +20,12 @@
             </span>
             <span v-else>Sorry, no matching options!</span>
           </template>
+          <template v-slot:option="option">
+            <span v-html="option.label"></span>
+          </template>
+          <template v-slot:selected-option="option">
+            <span v-html="option.label"></span>
+          </template>
         </v-select>
       </span>
       <span v-else>
@@ -30,7 +36,7 @@
           v-on:end="dragging = false"
           >
             <span class="vd__item" v-for="(item, index) in selected" v-bind:key="item.id">
-              {{ index + 1 }}. {{ item.label }}
+              {{ index + 1 }}. <span v-html="item.label"></span>
               <svg width="16" class="float-right" aria-hidden="true" focusable="false" data-prefix="far" data-icon="grip-lines" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M432 288H16c-8.8 0-16 7.2-16 16v16c0 8.8 7.2 16 16 16h416c8.8 0 16-7.2 16-16v-16c0-8.8-7.2-16-16-16zm0-112H16c-8.8 0-16 7.2-16 16v16c0 8.8 7.2 16 16 16h416c8.8 0 16-7.2 16-16v-16c0-8.8-7.2-16-16-16z"></path></svg>
             </span>
         </v-draggable>
