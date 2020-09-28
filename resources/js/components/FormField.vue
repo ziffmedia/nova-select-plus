@@ -1,56 +1,57 @@
 <template>
   <default-field :field="field" :errors="errors" :full-width-content="true">
     <template slot="field">
-      <span v-if="!isInReorderMode">
-        <v-select
-          class="nova-select-plus-vs"
-          v-model:value="selected"
-          v-bind:options="options"
-          v-bind:dusk="field.attribute"
-          v-bind:loading="isLoading"
-          v-bind:disabled="field.readonly"
-          v-bind:multiple="true"
-          v-bind:selectable="selectable"
-          v-bind:filterable="filterable"
-          v-on:search="handleSearch"
-        >
-          <template v-slot:no-options>
-            <span v-if="field.ajax_searchable">
-              Type to search...
-              <span v-if="ajaxSearchNoResults">Nothing found.</span>
-            </span>
-            <span v-else>Sorry, no matching options!</span>
-          </template>
-          <template v-slot:option="option">
-            <span v-html="option.label"></span>
-          </template>
-          <template v-slot:selected-option="option">
-            <span v-html="option.label"></span>
-          </template>
-        </v-select>
-      </span>
-      <span v-else>
-        <v-draggable
-          class="nova-select-plus-vd"
-          v-model="selected"
-          v-on:start="dragging = true"
-          v-on:end="dragging = false"
+      <div v-bind:dusk="field.attribute">
+        <template v-if="!isInReorderMode">
+          <v-select
+            class="nova-select-plus-vs"
+            v-model:value="selected"
+            v-bind:options="options"
+            v-bind:loading="isLoading"
+            v-bind:disabled="field.readonly"
+            v-bind:multiple="true"
+            v-bind:selectable="selectable"
+            v-bind:filterable="filterable"
+            v-on:search="handleSearch"
           >
-            <span class="vd__item" v-for="(item, index) in selected" v-bind:key="item.id">
-              {{ index + 1 }}. <span v-html="item.label"></span>
-              <svg width="16" class="float-right" aria-hidden="true" focusable="false" data-prefix="far" data-icon="grip-lines" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M432 288H16c-8.8 0-16 7.2-16 16v16c0 8.8 7.2 16 16 16h416c8.8 0 16-7.2 16-16v-16c0-8.8-7.2-16-16-16zm0-112H16c-8.8 0-16 7.2-16 16v16c0 8.8 7.2 16 16 16h416c8.8 0 16-7.2 16-16v-16c0-8.8-7.2-16-16-16z"></path></svg>
-            </span>
+            <template v-slot:no-options>
+              <span v-if="field.ajax_searchable">
+                Type to search...
+                <span v-if="ajaxSearchNoResults">Nothing found.</span>
+              </span>
+              <span v-else>Sorry, no matching options!</span>
+            </template>
+            <template v-slot:option="option">
+              <span v-html="option.label"></span>
+            </template>
+            <template v-slot:selected-option="option">
+              <span v-html="option.label"></span>
+            </template>
+          </v-select>
+        </template>
+        <template v-else>
+          <v-draggable
+            class="nova-select-plus-vd"
+            v-model="selected"
+            v-on:start="dragging = true"
+            v-on:end="dragging = false"
+          >
+          <span class="vd__item" v-for="(item, index) in selected" v-bind:key="item.id">
+            {{ index + 1 }}. <span v-html="item.label"></span>
+            <svg width="16" class="float-right" aria-hidden="true" focusable="false" data-prefix="far" data-icon="grip-lines" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M432 288H16c-8.8 0-16 7.2-16 16v16c0 8.8 7.2 16 16 16h416c8.8 0 16-7.2 16-16v-16c0-8.8-7.2-16-16-16zm0-112H16c-8.8 0-16 7.2-16 16v16c0 8.8 7.2 16 16 16h416c8.8 0 16-7.2 16-16v-16c0-8.8-7.2-16-16-16z"></path></svg>
+          </span>
         </v-draggable>
-      </span>
+      </template>
 
-      <span v-if="field.reorderable" class="float-right text-sm ml-3 border-1 mt-2 mr-4">
-        <a v-if="!isInReorderMode" v-on:click.prevent="isInReorderMode = true" class="text-primary dim no-underline" href="#">
-          Reorder
-        </a>
-        <a v-else class="text-primary dim no-underline" v-on:click.prevent="isInReorderMode = false" href="#">
-          Finish Reordering
-        </a>
-      </span>
+        <span v-if="field.reorderable" class="float-right text-sm ml-3 border-1 mt-2 mr-4">
+          <a v-if="!isInReorderMode" v-on:click.prevent="isInReorderMode = true" class="text-primary dim no-underline" href="#">
+            Reorder
+          </a>
+          <a v-else class="text-primary dim no-underline" v-on:click.prevent="isInReorderMode = false" href="#">
+            Finish Reordering
+          </a>
+        </span>
+      </div>
     </template>
   </default-field>
 </template>
