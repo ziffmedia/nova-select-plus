@@ -6,6 +6,7 @@
           class="nova-select-plus-vs"
           v-model:value="selected"
           v-bind:options="options"
+          v-bind:dusk="field.attribute"
           v-bind:loading="isLoading"
           v-bind:disabled="field.readonly"
           v-bind:multiple="true"
