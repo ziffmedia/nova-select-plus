@@ -4,6 +4,7 @@
       <div v-bind:dusk="field.attribute">
         <template v-if="!isInReorderMode">
           <v-select
+            ref="the-v-select"
             class="nova-select-plus-vs"
             v-model:value="selected"
             v-bind:options="options"
@@ -11,21 +12,33 @@
             v-bind:disabled="field.readonly"
             v-bind:multiple="true"
             v-bind:selectable="selectable"
-            v-bind:filterable="filterable"
+            v-bind:filterable="true"
             v-on:search="handleSearch"
           >
             <template v-slot:no-options>
               <span v-if="field.ajax_searchable">
                 Type to search...
-                <span v-if="ajaxSearchNoResults">Nothing found.</span>
+                <span v-if="ajaxSearchNoResults">
+                  Nothing found.
+                </span>
               </span>
-              <span v-else>Sorry, no matching options!</span>
+              <span v-else>
+                Sorry, no matching options!
+              </span>
             </template>
             <template v-slot:option="option">
               <span v-html="option.label"></span>
             </template>
             <template v-slot:selected-option="option">
               <span v-html="option.label"></span>
+            </template>
+            <template v-slot:search="{ attributes, events } ">
+              <input class="vs__search" v-bind="attributes" v-on="events">
+            </template>
+            <template v-slot:list-footer="{ filteredOptions, search }">
+              <li class="vs__no-options">
+                <a href="#" v-on:click="createNewOption(search)">Create {{ search }}</a>
+              </li>
             </template>
           </v-select>
         </template>
@@ -79,6 +92,7 @@
         isLoading: true,
         filterable: true,
         ajaxSearchNoResults: false,
+        // lastSearch: null,
         isInReorderMode: false
       }
     },
@@ -97,7 +111,7 @@
       },
 
       handleSearch: debounce(function (search, loading) {
-        if (this.field['ajax_searchable'] == false) {
+        if (this.field['ajax_searchable'] === false) {
           return
         }
 
@@ -132,12 +146,41 @@
 
       fill (formData) {
         formData.append(this.field.attribute, JSON.stringify(this.selected))
+      },
+
+      createNewOption (search) {
+        this.$refs['the-v-select'].select({ label: search })
+        // this.selected.push({ label: search})
+
       }
+
+      // filter (options, search) {
+      //   let vSelect = this.$refs['the-v-select']
+      //
+      //   let filteredOptions = options.filter((option) => {
+      //     let label = vSelect.getOptionLabel(option)
+      //     if (typeof label === 'number') {
+      //       label = label.toString()
+      //     }
+      //     return vSelect.filterBy(option, label, search)
+      //   });
+      //
+      //   if (this.field.creatable) {
+      //     debugger
+      //     let first = filteredOptions.shift
+      //     filteredOptions.push(first)
+      //   }
+      //
+      //   return filteredOptions
+      // }
+
     },
 
     mounted () {
+      console.log(this.field)
+
       // if there a no options (not yet supported), but needs the full list via ajax
-      if (this.field['ajax_searchable'] == false) {
+      if (this.field['ajax_searchable'] === false) {
         axios.get('/nova-vendor/select-plus/' + this.resourceName + '/' + this.field['relationship_name'])
           .then(resp => {
             this.options = resp.data

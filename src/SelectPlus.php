@@ -32,6 +32,14 @@ class SelectPlus extends Field
     public $ajaxSearchable = null;
     public $reorderable = null;
 
+    public $creatable = false;
+
+    public function creatable($creatable = true) {
+        $this->creatable = $creatable;
+
+        return $this;
+    }
+
     public function __construct($name, $attribute = null, $relationshipResource = null, $label = 'name')
     {
         parent::__construct($name, $attribute);
@@ -160,6 +168,7 @@ class SelectPlus extends Field
         $this->value = $this->mapToSelectionValue($this->value);
     }
 
+    /*
     protected function resolveForAttribute($resource)
     {
         if ($this->options === null) {
@@ -170,6 +179,7 @@ class SelectPlus extends Field
 
         // @todo do things specific to the kind of cast it is, or throw exception, if no cast, assume its options with string types
     }
+    */
 
     protected function fillAttribute(NovaRequest $request, $requestAttribute, $model, $attribute)
     {
@@ -179,10 +189,26 @@ class SelectPlus extends Field
             );
         }
 
+        $values = new Collection(json_decode($request[$requestAttribute], true));
+
+        $newValues = $values->filter(function ($value) {
+            $keyName = ($this->relationshipResource)::newModel()->getKeyName();
+
+            if (!isset($value[$keyName])) {
+                return true;
+            }
+
+            return false;
+        });
+
+        if ($newValues->count() > 1 && $this->creatable === true) {
+
+        }
+
         // returning an invokable allows this to run after the model has been saved (which is crucial if this is a new model)
         return new FillStrategy\FillAttributeSyncCallback(
             $this->relationshipResource,
-            new Collection(json_decode($request[$requestAttribute], true)),
+            $values,
             $model,
             $attribute,
             $this->reorderable
@@ -208,7 +234,8 @@ class SelectPlus extends Field
             'value_for_index_display'  => $this->valueForIndexDisplay,
             'value_for_detail_display' => $this->valueForDetailDisplay,
             'max_selections'           => $this->maxSelections,
-            'reorderable'              => $this->reorderable !== null
+            'reorderable'              => $this->reorderable !== null,
+            'creatable'               => $this->creatable
         ]);
     }
 
