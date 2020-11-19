@@ -19,12 +19,25 @@ class Controller
 
     public function options(NovaRequest $request, $resource, $relationship)
     {
+        $availableFields = $request->newResource()
+            ->availableFields($request);
+
         /** @var SelectPlus $field */
-        $field = $request->newResource()
-            ->availableFields($request)
+        $field = $availableFields
             ->where('component', 'select-plus')
             ->where('attribute', $relationship)
             ->first();
+
+        //Look a little harder - It may be on another control.
+        if (!$field) {
+            $field = $availableFields->pluck('meta.fields')
+                ->whereNotNull()
+                ->flatten()
+                ->where('component', 'select-plus')
+                ->where('attribute', $relationship)
+                ->first();
+        }
+        
 
         /** @var Builder $model */
         $query = $field->relationshipResource::newModel()->newQuery();
