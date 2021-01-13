@@ -101,7 +101,7 @@
           return
         }
 
-        if (!search) {
+        if (this.field['ajax_searchable_empty_search'] === false && !search) {
           this.ajaxSearchNoResults = false
 
           return
@@ -137,7 +137,9 @@
 
     mounted () {
       // if there a no options (not yet supported), but needs the full list via ajax
-      if (this.field['ajax_searchable'] === false) {
+      if (this.field['ajax_searchable'] === false
+          || (this.field['ajax_searchable'] === true && this.field['ajax_searchable_empty_search'] === true)
+      ) {
         axios.get('/nova-vendor/select-plus/' + this.resourceName + '/' + this.field['relationship_name'], {
           params: { resourceId: this.resourceId }
         })

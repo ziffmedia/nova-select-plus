@@ -36,7 +36,7 @@ class Controller
             $this->application->call($field->optionsQuery, compact('query', 'request', 'resourceId'));
         }
 
-        if ($field->ajaxSearchable !== null && $request->has('search')) {
+        if ($field->ajaxSearchable) {
             $search = $request->get('search');
 
             if (is_callable($field->ajaxSearchable)) {

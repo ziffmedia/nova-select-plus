@@ -30,6 +30,7 @@ class SelectPlus extends Field
     public $optionsQuery = null;
     public $maxSelections = null;
     public $ajaxSearchable = null;
+    public $ajaxSearchableEmptySearch = false;
     public $reorderable = null;
 
     public function __construct($name, $attribute = null, $relationshipResource = null, $label = 'name')
@@ -92,9 +93,10 @@ class SelectPlus extends Field
         return $this;
     }
 
-    public function ajaxSearchable($ajaxSearchable)
+    public function ajaxSearchable($ajaxSearchable, $ajaxSearchableEmptySearch = false)
     {
         $this->ajaxSearchable = $ajaxSearchable;
+        $this->ajaxSearchableEmptySearch = $ajaxSearchableEmptySearch;
 
         return $this;
     }
@@ -202,13 +204,15 @@ class SelectPlus extends Field
 
     public function jsonSerialize()
     {
+        // @todo in next version, rename these to camel case
         return array_merge(parent::jsonSerialize(), [
-            'ajax_searchable'          => $this->ajaxSearchable !== null,
-            'relationship_name'        => $this->attribute,
-            'value_for_index_display'  => $this->valueForIndexDisplay,
-            'value_for_detail_display' => $this->valueForDetailDisplay,
-            'max_selections'           => $this->maxSelections,
-            'reorderable'              => $this->reorderable !== null
+            'ajax_searchable'              => $this->ajaxSearchable !== null,
+            'ajax_searchable_empty_search' => (bool) $this->ajaxSearchableEmptySearch,
+            'relationship_name'            => $this->attribute,
+            'value_for_index_display'      => $this->valueForIndexDisplay,
+            'value_for_detail_display'     => $this->valueForDetailDisplay,
+            'max_selections'               => $this->maxSelections,
+            'reorderable'                  => $this->reorderable !== null
         ]);
     }
 
@@ -221,4 +225,3 @@ class SelectPlus extends Field
         return $model->{$this->label};
     }
 }
-
