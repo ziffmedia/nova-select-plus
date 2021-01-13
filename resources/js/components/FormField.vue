@@ -97,7 +97,7 @@
       },
 
       handleSearch: debounce(function (search, loading) {
-        if (this.field['ajax_searchable'] == false) {
+        if (this.field['ajax_searchable'] === false) {
           return
         }
 
@@ -110,8 +110,8 @@
         loading(true)
 
         axios.get('/nova-vendor/select-plus/' + this.resourceName + '/' + this.field['relationship_name'], {
-            params: {search: search, resourceId: this.resourceId}
-          })
+          params: { search: search, resourceId: this.resourceId }
+        })
           .then(resp => {
             this.options = resp.data
 
@@ -137,8 +137,10 @@
 
     mounted () {
       // if there a no options (not yet supported), but needs the full list via ajax
-      if (this.field['ajax_searchable'] == false) {
-        axios.get('/nova-vendor/select-plus/' + this.resourceName + '/' + this.field['relationship_name'])
+      if (this.field['ajax_searchable'] === false) {
+        axios.get('/nova-vendor/select-plus/' + this.resourceName + '/' + this.field['relationship_name'], {
+          params: { resourceId: this.resourceId }
+        })
           .then(resp => {
             this.options = resp.data
             this.isLoading = false
