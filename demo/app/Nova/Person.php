@@ -59,6 +59,7 @@ class Person extends Resource
                 // ->label(fn ($state) => $state->id . ' - ' . $state->name)
                 // ->ajaxSearchable(true)
                 // ->ajaxSearchable(fn ($query, $search) => $query->where('name', 'LIKE', "%{$search}%")->limit(2))
+                ->placeholder('Type to search')
                 ->help('This is a belongsToMany() relationship in the model'),
 
             SelectPlus::make('States Visited', 'statesVisited', State::class)

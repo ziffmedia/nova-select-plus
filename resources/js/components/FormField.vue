@@ -7,6 +7,7 @@
             class="nova-select-plus-vs"
             v-model:value="selected"
             v-bind:options="options"
+            v-bind:placeholder="placeholder"
             v-bind:loading="isLoading"
             v-bind:disabled="field.readonly"
             v-bind:multiple="true"
@@ -79,7 +80,8 @@
         isLoading: true,
         filterable: true,
         ajaxSearchNoResults: false,
-        isInReorderMode: false
+        isInReorderMode: false,
+        placeholder: ''
       }
     },
 
@@ -136,6 +138,8 @@
     },
 
     mounted () {
+      this.placeholder = this.field?.extraAttributes?.placeholder
+
       // if there a no options (not yet supported), but needs the full list via ajax
       if (this.field['ajax_searchable'] === false
           || (this.field['ajax_searchable'] === true && this.field['ajax_searchable_empty_search'] === true)
