@@ -1,5 +1,5 @@
 <template>
-  <default-field :field="field" :errors="errors" :full-width-content="true">
+  <default-field :field="field" :errors="errors" :full-width-content="true" :show-help-text="field.helpText != null">
     <template slot="field">
       <div v-bind:dusk="field.attribute">
         <template v-if="!isInReorderMode">
