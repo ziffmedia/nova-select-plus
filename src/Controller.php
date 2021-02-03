@@ -29,20 +29,19 @@ class Controller
         /** @var Builder $model */
         $query = $field->relationshipResource::newModel()->newQuery();
 
+        // pull out resourceId for use in querying callbacks
+        $resourceId = $request->get('resourceId');
+
         if ($field->optionsQuery) {
-            ($field->optionsQuery)($query);
+            $this->application->call($field->optionsQuery, compact('query', 'request', 'resourceId'));
         }
 
-        if ($field->ajaxSearchable !== null && $request->has('search')) {
+        if ($field->ajaxSearchable) {
             $search = $request->get('search');
 
             if (is_callable($field->ajaxSearchable)) {
-                $return = $this->application->call($field->ajaxSearchable, [
-                    'query'      => $query,
-                    'search'     => $search,
-                    'resourceId' => $request->get('resourceId'),
-                    'request'    => $request,
-                ]);
+
+                $return = $this->application->call($field->ajaxSearchable, compact('query', 'request', 'search', 'resourceId'));
 
                 if ($return instanceof Builder) {
                     $query = $return;

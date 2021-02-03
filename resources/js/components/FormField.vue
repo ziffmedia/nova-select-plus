@@ -1,5 +1,5 @@
 <template>
-  <default-field :field="field" :errors="errors" :full-width-content="true">
+  <default-field :field="field" :errors="errors" :full-width-content="true" :show-help-text="field.helpText != null">
     <template slot="field">
       <div v-bind:dusk="field.attribute">
         <template v-if="!isInReorderMode">
@@ -7,6 +7,7 @@
             class="nova-select-plus-vs"
             v-model:value="selected"
             v-bind:options="options"
+            v-bind:placeholder="placeholder"
             v-bind:loading="isLoading"
             v-bind:disabled="field.readonly"
             v-bind:multiple="true"
@@ -79,7 +80,8 @@
         isLoading: true,
         filterable: true,
         ajaxSearchNoResults: false,
-        isInReorderMode: false
+        isInReorderMode: false,
+        placeholder: ''
       }
     },
 
@@ -97,11 +99,11 @@
       },
 
       handleSearch: debounce(function (search, loading) {
-        if (this.field['ajax_searchable'] == false) {
+        if (this.field['ajax_searchable'] === false) {
           return
         }
 
-        if (!search) {
+        if (this.field['ajax_searchable_empty_search'] === false && !search) {
           this.ajaxSearchNoResults = false
 
           return
@@ -110,8 +112,8 @@
         loading(true)
 
         axios.get('/nova-vendor/select-plus/' + this.resourceName + '/' + this.field['relationship_name'], {
-            params: {search: search, resourceId: this.resourceId}
-          })
+          params: { search: search, resourceId: this.resourceId }
+        })
           .then(resp => {
             this.options = resp.data
 
@@ -136,9 +138,15 @@
     },
 
     mounted () {
+      this.placeholder = this.field?.extraAttributes?.placeholder
+
       // if there a no options (not yet supported), but needs the full list via ajax
-      if (this.field['ajax_searchable'] == false) {
-        axios.get('/nova-vendor/select-plus/' + this.resourceName + '/' + this.field['relationship_name'])
+      if (this.field['ajax_searchable'] === false
+          || (this.field['ajax_searchable'] === true && this.field['ajax_searchable_empty_search'] === true)
+      ) {
+        axios.get('/nova-vendor/select-plus/' + this.resourceName + '/' + this.field['relationship_name'], {
+          params: { resourceId: this.resourceId }
+        })
           .then(resp => {
             this.options = resp.data
             this.isLoading = false
