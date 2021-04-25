@@ -36,6 +36,10 @@ time, to populate a pivot value useful for ordering relations.
 ## Usage
 
 ```php
+use ZiffMedia\NovaSelectPlus\SelectPlus;
+```
+
+```php
     // setup model like normal:
     public function statesLivedIn()
     {
