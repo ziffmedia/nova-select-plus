@@ -124,7 +124,7 @@ class SelectPlus extends Field
         }
 
         // handle setting up values for relations
-        if (method_exists($resource, $this->attribute)) {
+        if (is_callable([$resource, $this->attribute])) {
             $this->resolveForRelations($resource);
 
             return;
