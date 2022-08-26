@@ -1,29 +1,23 @@
 <template>
-  <panel-item :field="field">
-    <template slot="value">
-      <componet
-        v-bind:is="field.reorderable == true ? 'ol' : 'ul'"
-        v-if="Array.isArray(field.value_for_detail_display)"
+  <PanelItem :index="index" :field="field">
+    <template #value>
+      <component
+        v-if="Array.isArray(field.valueForDetailDisplay)"
+        :is="field.isReorderable == true ? 'ol' : 'ul'"
       >
-        <li v-for="item in field.value_for_detail_display">
+        <li v-for="item in field.valueForDetailDisplay">
           {{ item }}
         </li>
-      </componet>
-      <span v-if="typeof field.value_for_detail_display == 'string'">
-        {{ field.value_for_detail_display || '-'}}
+      </component>
+      <span v-if="typeof field.valueForDetailDisplay == 'string'">
+        {{ field.valueForDetailDisplay || '-'}}
       </span>
     </template>
-  </panel-item>
+  </PanelItem>
 </template>
 
 <script>
-  export default {
-    props: ['field'], // 'resource', 'resourceName', 'resourceId',
-
-    data () {
-      return {
-        value: 'Detail'
-      }
-    }
-  }
+export default {
+  props: ['index', 'resource', 'resourceName', 'resourceId', 'field'],
+}
 </script>

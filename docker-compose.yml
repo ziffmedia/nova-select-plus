@@ -1,0 +1,17 @@
+version: '3.7'
+
+services:
+
+  web:
+    image: elephantbox/elephantbox:focal-p81n18-202208
+    command: run-services nginx,php-fpm
+    environment:
+      APP_NAME: demo
+      APP_ENV: local
+      ENTRYPOINT_SCRIPT: /app/demo/.entryscript.sh
+      PHP_IDE_CONFIG: serverName=localhost
+    working_dir: /app/demo
+    ports:
+      - 8000:80
+    volumes:
+      - .:/app

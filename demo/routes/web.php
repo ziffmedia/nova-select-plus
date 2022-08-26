@@ -13,5 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', 'Controller@welcome');
-Route::get('/simple-post/{simple_post}', 'Controller@simplePost')->name('simple-post');
+Route::get('/', function () {
+    return view('welcome');
+});

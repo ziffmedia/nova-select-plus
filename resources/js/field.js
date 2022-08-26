@@ -1,5 +1,9 @@
+import DetailField from './components/DetailField'
+import FormField from './components/FormField'
+import IndexField from './components/IndexField'
+
 Nova.booting((Vue, router, store) => {
-  Vue.component('index-select-plus', require('./components/IndexField').default)
-  Vue.component('detail-select-plus', require('./components/DetailField').default)
-  Vue.component('form-select-plus', require('./components/FormField').default)
+  Vue.component('detail-select-plus', DetailField)
+  Vue.component('form-select-plus', FormField)
+  Vue.component('index-select-plus', IndexField)
 })
