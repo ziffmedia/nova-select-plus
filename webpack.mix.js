@@ -6,7 +6,6 @@ mix.setPublicPath('dist')
   .js('resources/js/field.js', 'js')
   .css('resources/css/field.css', 'css')
   .options({
-    processCssUrls: false,
     terser: {
       extractComments: false,
     }

@@ -1,15 +1,17 @@
-/* Nova Field CSS */
-
 @import "../../node_modules/vue-select/dist/vue-select.css";
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .nova-select-plus-vs .vs__selected {
-  background: var(--20);
-  border: 1px solid var(--primary-dark);
-  color: var(--primary-dark);
+  background: var(--colors-gray-500);
+  border: 1px solid var(--colors-black);
+  color: var(--colors-black);
 }
 
 .nova-select-plus-vs .vs__dropdown-toggle {
-  border-color: var(--60);
+  border-color: var(--colors-gray-500);
   border-radius: .5rem;
   padding: 3px 3px 7px 5px;
 }
@@ -33,9 +35,9 @@
 .nova-select-plus-vd .vd__item {
   display: block;
   border-radius: 4px;
-  background: var(--20);
-  border: 1px solid var(--primary-dark);
-  color: var(--primary-dark);
+  background: var(--colors-gray-500);
+  border: 1px solid var(--colors-black);
+  color: var(--colors-black);
   margin: 4px 2px 0;
   padding: .5rem;
 }
@@ -44,6 +46,6 @@
   opacity: .75;
 }
 
-.nova-select-plus-vd .vd__item_drag_icon {
-  float: right
-}
+/*.nova-select-plus-vd .vd__item_drag_icon {*/
+/*  float: right*/
+/*}*/

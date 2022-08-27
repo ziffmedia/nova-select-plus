@@ -4,7 +4,6 @@ namespace ZiffMedia\NovaSelectPlus;
 
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
 use Laravel\Nova\Fields\Field;
