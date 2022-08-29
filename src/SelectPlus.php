@@ -4,7 +4,6 @@ namespace ZiffMedia\NovaSelectPlus;
 
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
 use Laravel\Nova\Fields\Field;
@@ -202,17 +201,17 @@ class SelectPlus extends Field
         });
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         // @todo in next version, rename these to camel case
         return array_merge(parent::jsonSerialize(), [
-            'ajax_searchable'              => $this->ajaxSearchable !== null,
-            'ajax_searchable_empty_search' => (bool) $this->ajaxSearchableEmptySearch,
-            'relationship_name'            => $this->attribute,
-            'value_for_index_display'      => $this->valueForIndexDisplay,
-            'value_for_detail_display'     => $this->valueForDetailDisplay,
-            'max_selections'               => $this->maxSelections,
-            'reorderable'                  => $this->reorderable !== null
+            'isAjaxSearchable'            => $this->ajaxSearchable !== null,
+            'isAjaxSearchableEmptySearch' => (bool) $this->ajaxSearchableEmptySearch,
+            'relationshipName'            => $this->attribute,
+            'valueForIndexDisplay'        => $this->valueForIndexDisplay,
+            'valueForDetailDisplay'       => $this->valueForDetailDisplay,
+            'maxSelections'               => $this->maxSelections,
+            'isReorderable'               => $this->reorderable !== null
         ]);
     }
 

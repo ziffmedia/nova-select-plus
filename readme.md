@@ -6,7 +6,12 @@
 composer require ziffmedia/nova-select-plus
 ```
 
-## Description & Use Cases
+## Versions &amp; Compatibility
+
+- Version `^1.0` supports Nova 2-3
+- Version `^2.0` supports Nova 4 (with Vue 3, dark mode support, etc)
+
+## Description &amp; Use Cases
 
 ![alt text](https://github.com/ziffmedia/nova-select-plus/raw/master/docs/0-intro.gif "Intro Gif")
 

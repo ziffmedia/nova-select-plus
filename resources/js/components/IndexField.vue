@@ -1,21 +1,28 @@
 <template>
   <div>
-    <componet
-      v-bind:is="field.reorderable == true ? 'ol' : 'ul'"
+    <component
       v-if="Array.isArray(field.value_for_index_display)"
-      >
+      :is="field.isReorderable === true ? 'ol' : 'ul'"
+    >
       <li v-for="item in field.value_for_index_display">
         {{ item }}
       </li>
-    </componet>
-    <span v-if="typeof field.value_for_index_display == 'string'">
-      {{ field.value_for_index_display || '-'}}
+    </component>
+    <span v-if="typeof field.valueForIndexDisplay == 'string'">
+      {{ field.valueForIndexDisplay || '-'}}
     </span>
   </div>
 </template>
 
 <script>
-  export default {
-    props: ['field'],
+export default {
+  props: ['resourceName', 'field'],
+
+  computed: {
+    fieldValue () {
+      debugger
+      return this.field.displayedAs || this.field.value
+    },
   }
+}
 </script>

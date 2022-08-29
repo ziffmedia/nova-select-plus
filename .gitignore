@@ -8,3 +8,5 @@ phpunit.xml
 Thumbs.db
 /.idea
 /nova-app
+/vendor/
+/demo/vendor

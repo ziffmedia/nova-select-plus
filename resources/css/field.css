@@ -1,0 +1,49 @@
+@import "../../node_modules/vue-select/dist/vue-select.css";
+
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .nova-select-plus-vs .vs__selected {
+        @apply bg-gray-100 border border-gray-700 text-gray-600
+            dark:bg-gray-900 dark:text-gray-200 dark:border-gray-700;
+    }
+
+    .nova-select-plus-vs .vs__dropdown-menu {
+        @apply text-gray-600 dark:bg-gray-900 dark:text-gray-200;
+    }
+
+    .nova-select-plus-vs .vs__dropdown-toggle {
+        @apply p-[3px_3px_7px_5px];
+    }
+
+    .nova-select-plus-vs .vs__open-indicator {
+        @apply fill-primary-400;
+    }
+
+    .nova-select-plus-vs .vs__open-indicator:hover {
+        @apply opacity-50;
+    }
+
+    .nova-select-plus-vs .vs__deselect {
+        @apply fill-primary-400;
+    }
+
+    .nova-select-plus-vs .vs__deselect:hover {
+        @apply opacity-50;
+    }
+
+    .nova-select-plus-vd .vd__item {
+        @apply block rounded-lg bg-gray-100 border border-gray-900 text-gray-600 mt-1 mx-0.5 p-2 cursor-pointer
+            dark:bg-gray-900 dark:text-gray-200 dark:border-gray-700;
+    }
+
+    .nova-select-plus-vd .vd__item:hover {
+        @apply opacity-75;
+    }
+
+    .nova-select-plus-vd .vd__item_drag_icon {
+        @apply float-right fill-primary-400 text-primary-400;
+    }
+}
+
