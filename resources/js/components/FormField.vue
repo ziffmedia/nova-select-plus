@@ -14,7 +14,7 @@
           :filterable="filterable"
           @search="handleSearch"
         >
-          <template v-slot:no-options>
+          <template #no-options>
             <span v-if="field.isAjaxSearchable">
               Type to search...
               <span v-if="ajaxSearchNoResults">Nothing found.</span>
@@ -23,34 +23,52 @@
               Sorry, no matching options!
             </span>
           </template>
-          <template v-slot:option="option">
+          <template #option="option">
             <span v-html="option.label" />
           </template>
-          <template v-slot:selected-option="option">
+          <template #selected-option="option">
             <span v-html="option.label" />
           </template>
         </v-select>
-        <button @click.prevent="debug">Debug</button>
       </template>
       <template v-else>
         <v-draggable
           class="nova-select-plus-vd"
           v-model="selected"
-          v-on:start="isDragging = true"
-          v-on:end="isDragging = false"
+          @start="isDragging = true"
+          @end="isDragging = false"
         >
-          <span class="vd__item" v-for="(item, index) in selected" v-bind:key="item.id">
+          <span
+            class="vd__item"
+            v-for="(item, index) in selected"
+            :key="item.id"
+          >
             {{ index + 1 }}. <span v-html="item.label"></span>
-            <svg width="16" style="float: right" aria-hidden="true" focusable="false" data-prefix="far" data-icon="grip-lines" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M432 288H16c-8.8 0-16 7.2-16 16v16c0 8.8 7.2 16 16 16h416c8.8 0 16-7.2 16-16v-16c0-8.8-7.2-16-16-16zm0-112H16c-8.8 0-16 7.2-16 16v16c0 8.8 7.2 16 16 16h416c8.8 0 16-7.2 16-16v-16c0-8.8-7.2-16-16-16z"></path></svg>
+            <svg width="16" class="vd__item_drag_icon" aria-hidden="true" focusable="false" data-prefix="far" data-icon="grip-lines" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+              <path fill="currentColor" d="M432 288H16c-8.8 0-16 7.2-16 16v16c0 8.8 7.2 16 16 16h416c8.8 0 16-7.2 16-16v-16c0-8.8-7.2-16-16-16zm0-112H16c-8.8 0-16 7.2-16 16v16c0 8.8 7.2 16 16 16h416c8.8 0 16-7.2 16-16v-16c0-8.8-7.2-16-16-16z"></path>
+            </svg>
           </span>
         </v-draggable>
       </template>
 
-      <span v-if="field.isReorderable" class="float-right text-sm ml-3 border-1 mt-2 mr-4">
-        <a v-if="!isInReorderMode" v-on:click.prevent="isInReorderMode = true" class="text-primary dim no-underline" href="#">
+      <span
+        v-if="field.isReorderable"
+        class="float-right text-sm ml-3 border-1 mt-2 mr-4"
+      >
+        <a
+          v-if="!isInReorderMode"
+          class="text-primary dim no-underline"
+          href="#"
+          @click.prevent="isInReorderMode = true"
+        >
           Reorder
         </a>
-        <a v-else class="text-primary dim no-underline" v-on:click.prevent="isInReorderMode = false" href="#">
+        <a
+          v-else
+          class="text-primary dim no-underline"
+          href="#"
+          @click.prevent="isInReorderMode = false"
+        >
           Finish Reordering
         </a>
       </span>
@@ -136,11 +154,7 @@ export default {
         })
 
       return true
-    }, 500),
-
-    debug () {
-      console.log(this.selected)
-    }
+    }, 500)
   },
 
   mounted () {

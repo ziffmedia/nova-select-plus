@@ -8,7 +8,7 @@
     "hot": "mix watch --hot",
     "prod": "npm run production",
     "production": "mix --production",
-    "nova:install": "npm --prefix='../../vendor/laravel/nova' ci",
+    "nova:install": "npm --prefix='vendor/laravel/nova' ci",
     "eslint": "eslint --ext .js,.vue --fix-dry-run --fix-type suggestion,problem resources/js"
   },
   "devDependencies": {

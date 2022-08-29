@@ -1,51 +1,49 @@
 @import "../../node_modules/vue-select/dist/vue-select.css";
 
-@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-.nova-select-plus-vs .vs__selected {
-  background: var(--colors-gray-500);
-  border: 1px solid var(--colors-black);
-  color: var(--colors-black);
+@layer components {
+    .nova-select-plus-vs .vs__selected {
+        @apply bg-gray-100 border border-gray-700 text-gray-600
+            dark:bg-gray-900 dark:text-gray-200 dark:border-gray-700;
+    }
+
+    .nova-select-plus-vs .vs__dropdown-menu {
+        @apply text-gray-600 dark:bg-gray-900 dark:text-gray-200;
+    }
+
+    .nova-select-plus-vs .vs__dropdown-toggle {
+        @apply p-[3px_3px_7px_5px];
+    }
+
+    .nova-select-plus-vs .vs__open-indicator {
+        @apply fill-primary-400;
+    }
+
+    .nova-select-plus-vs .vs__open-indicator:hover {
+        @apply opacity-50;
+    }
+
+    .nova-select-plus-vs .vs__deselect {
+        @apply fill-primary-400;
+    }
+
+    .nova-select-plus-vs .vs__deselect:hover {
+        @apply opacity-50;
+    }
+
+    .nova-select-plus-vd .vd__item {
+        @apply block rounded-lg bg-gray-100 border border-gray-900 text-gray-600 mt-1 mx-0.5 p-2 cursor-pointer
+            dark:bg-gray-900 dark:text-gray-200 dark:border-gray-700;
+    }
+
+    .nova-select-plus-vd .vd__item:hover {
+        @apply opacity-75;
+    }
+
+    .nova-select-plus-vd .vd__item_drag_icon {
+        @apply float-right fill-primary-400 text-primary-400;
+    }
 }
 
-.nova-select-plus-vs .vs__dropdown-toggle {
-  border-color: var(--colors-gray-500);
-  border-radius: .5rem;
-  padding: 3px 3px 7px 5px;
-}
-
-.nova-select-plus-vs .vs__open-indicator {
-  fill: var(--primary);
-}
-
-.nova-select-plus-vs .vs__open-indicator:hover {
-  opacity: .5;
-}
-
-.nova-select-plus-vs .vs__deselect {
-  fill: var(--primary);
-}
-
-.nova-select-plus-vs .vs__deselect:hover {
-  opacity: .5;
-}
-
-.nova-select-plus-vd .vd__item {
-  display: block;
-  border-radius: 4px;
-  background: var(--colors-gray-500);
-  border: 1px solid var(--colors-black);
-  color: var(--colors-black);
-  margin: 4px 2px 0;
-  padding: .5rem;
-}
-
-.nova-select-plus-vd .vd__item:hover {
-  opacity: .75;
-}
-
-/*.nova-select-plus-vd .vd__item_drag_icon {*/
-/*  float: right*/
-/*}*/
