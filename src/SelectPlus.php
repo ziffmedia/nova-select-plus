@@ -8,12 +8,15 @@ use Illuminate\Support\Collection;
 use InvalidArgumentException;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\ResourceRelationshipGuesser;
+use Laravel\Nova\Fields\SupportsDependentFields;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Resource;
 use RuntimeException;
 
 class SelectPlus extends Field
 {
+    use SupportsDependentFields;
+
     public $component = 'select-plus';
 
     public $relationshipResource = null;
