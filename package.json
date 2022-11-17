@@ -19,7 +19,7 @@
     "laravel-mix": "^6.0.41",
     "lodash": "^4.17.20",
     "postcss": "^8.3.11",
-    "resolve-url-loader": "^3.1.0",
+    "resolve-url-loader": "^5.0.0",
     "tailwindcss": "^3.1.8",
     "vue": "^3.2.37",
     "vue-draggable-next": "^2.1.1",
