@@ -13,6 +13,8 @@
           :selectable="selectable"
           :filterable="filterable"
           @search="handleSearch"
+          @option:selected="$emit('field-changed')"
+          @option:deselected="$emit('field-changed')"
         >
           <template #no-options>
             <span v-if="field.isAjaxSearchable">

@@ -52,8 +52,8 @@ $app->singleton(
 |
 */
 
-if (!file_exists(__DIR__ . '/../database/select-plus-demo.sqlite')) {
-    file_put_contents(__DIR__ . '/../database/select-plus-demo.sqlite', '');
+if (! file_exists(__DIR__.'/../database/select-plus-demo.sqlite')) {
+    file_put_contents(__DIR__.'/../database/select-plus-demo.sqlite', '');
 }
 
 return $app;

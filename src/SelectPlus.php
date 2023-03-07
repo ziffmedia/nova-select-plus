@@ -24,15 +24,23 @@ class SelectPlus extends Field
     public $label = 'name';
 
     public $indexLabel = null;
+
     public $detailLabel = null;
 
     public $valueForIndexDisplay = null;
+
     public $valueForDetailDisplay = null;
 
     public $optionsQuery = null;
+
     public $maxSelections = null;
+
     public $ajaxSearchable = null;
+
     public $ajaxSearchableEmptySearch = false;
+
+    public $mapToSelectionValuesCallback = null;
+
     public $reorderable = null;
 
     public function __construct($name, $attribute = null, $relationshipResource = null, $label = 'name')
@@ -41,7 +49,7 @@ class SelectPlus extends Field
 
         $this->relationshipResource = $relationshipResource ?? ResourceRelationshipGuesser::guessResource($name);
 
-        if (!class_exists($this->relationshipResource)) {
+        if (! class_exists($this->relationshipResource)) {
             throw new RuntimeException("Relationship Resource {$this->relationshipResource} is not a valid class");
         }
 
@@ -50,7 +58,7 @@ class SelectPlus extends Field
 
     public function label($label)
     {
-        if (!(is_string($label) || is_callable($label))) {
+        if (! (is_string($label) || is_callable($label))) {
             throw new InvalidArgumentException('label() must be a string or callable');
         }
 
@@ -60,7 +68,7 @@ class SelectPlus extends Field
     }
 
     /**
-     * @param string|callable $indexLabel
+     * @param  string|callable  $indexLabel
      * @return $this
      */
     public function usingIndexLabel($indexLabel)
@@ -71,7 +79,7 @@ class SelectPlus extends Field
     }
 
     /**
-     * @param string|callable $detailLabel
+     * @param  string|callable  $detailLabel
      * @return $this
      */
     public function usingDetailLabel($detailLabel)
@@ -111,17 +119,17 @@ class SelectPlus extends Field
     }
 
     /**
-     * @param mixed|Resource|Model $resource
-     * @param null $attribute
+     * @param  mixed|resource|Model  $resource
+     * @param  null  $attribute
      */
     public function resolve($resource, $attribute = null)
     {
         // use base functionality to populate $this->value
         parent::resolve($resource, $attribute);
 
-        if ($this->ajaxSearchable && !is_callable($this->ajaxSearchable) && is_callable($this->label)) {
-            throw new RuntimeException('"' . $this->name . '" as a ' . __CLASS__
-                . ' has a dynamic (function) for label(), when using ajaxSearchable() and label(fn), ajaxSearchable() must also be dynamic (function).'
+        if ($this->ajaxSearchable && ! is_callable($this->ajaxSearchable) && is_callable($this->label)) {
+            throw new RuntimeException('"'.$this->name.'" as a '.__CLASS__
+                .' has a dynamic (function) for label(), when using ajaxSearchable() and label(fn), ajaxSearchable() must also be dynamic (function).'
             );
         }
 
@@ -133,7 +141,6 @@ class SelectPlus extends Field
         }
 
         throw new RuntimeException('Currently attributes are not yet supported');
-
         // @todo $this->resolveForAttribute($resource);
     }
 
@@ -147,7 +154,7 @@ class SelectPlus extends Field
         } else {
             $count = $this->value->count();
 
-            $this->valueForIndexDisplay = $count . ' ' . $this->name; // example: "5 states"
+            $this->valueForIndexDisplay = $count.' '.$this->name; // example: "5 states"
         }
 
         if ($this->detailLabel) {
@@ -157,7 +164,7 @@ class SelectPlus extends Field
         } else {
             $count = $this->value->count();
 
-            $this->valueForDetailDisplay = $count . ' ' . $this->name;
+            $this->valueForDetailDisplay = $count.' '.$this->name;
         }
 
         // convert to {key: xxx, label: xxx} format
@@ -193,14 +200,35 @@ class SelectPlus extends Field
         );
     }
 
+    public function withMapToSelectionValues(callable $mapToSelectionValuesCallback)
+    {
+        $this->mapToSelectionValuesCallback = $mapToSelectionValuesCallback;
+
+        return $this;
+    }
+
     public function mapToSelectionValue(EloquentCollection $models)
     {
-        return $models->map(function (Model $model) {
-            // todo add order field
+        $collectionOfArrayResultsWithModel = $models->map(function (Model $model) {
             return [
                 $model->getKeyName() => $model->getKey(),
-                'label' => $this->labelize($model)
+                'label' => 'To Be Filled In',
+                'model' => $model
             ];
+        });
+
+        if ($this->mapToSelectionValuesCallback) {
+            $collectionOfArrayResultsWithModel = ($this->mapToSelectionValuesCallback)($collectionOfArrayResultsWithModel);
+        }
+
+        return $collectionOfArrayResultsWithModel->map(function ($result) {
+            if ($result['label'] === 'To Be Filled In') {
+                $result['label'] = $this->labelize($result['model']);
+            }
+
+            unset($result['model']);
+
+            return $result;
         });
     }
 
@@ -208,13 +236,13 @@ class SelectPlus extends Field
     {
         // @todo in next version, rename these to camel case
         return array_merge(parent::jsonSerialize(), [
-            'isAjaxSearchable'            => $this->ajaxSearchable !== null,
+            'isAjaxSearchable' => $this->ajaxSearchable !== null,
             'isAjaxSearchableEmptySearch' => (bool) $this->ajaxSearchableEmptySearch,
-            'relationshipName'            => $this->attribute,
-            'valueForIndexDisplay'        => $this->valueForIndexDisplay,
-            'valueForDetailDisplay'       => $this->valueForDetailDisplay,
-            'maxSelections'               => $this->maxSelections,
-            'isReorderable'               => $this->reorderable !== null
+            'relationshipName' => $this->attribute,
+            'valueForIndexDisplay' => $this->valueForIndexDisplay,
+            'valueForDetailDisplay' => $this->valueForDetailDisplay,
+            'maxSelections' => $this->maxSelections,
+            'isReorderable' => $this->reorderable !== null,
         ]);
     }
 

@@ -4,6 +4,8 @@ namespace App\Nova;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -33,6 +35,8 @@ class Person extends Resource
     public static $search = [
         'id',
     ];
+
+    public static $preventFormAbandonment = true;
 
     /**
      * Get the fields displayed by the resource.
@@ -76,7 +80,22 @@ class Person extends Resource
                 ->ajaxSearchable(function (Builder $query, $search) {
                     $query->where('name', 'LIKE', "%{$search}%")->limit(5);
                 }, true)
-                ->label(fn ($state) => $state->name . " <span class=\"text-xs\">({$state->code})</span>")
+
+                // this is an example of hooking into the collection to result mapping, and doing an extra lookup for additional information
+
+                // ->withMapToSelectionValues(function (Collection $collection) {
+                //     $counts = DB::table('states')
+                //         ->select(['id', DB::raw('length(name) as count')])
+                //         ->whereIn('id', $collection->pluck('model.id'))
+                //         ->get()
+                //         ->mapWithKeys(fn ($item) => [$item->id => $item->count]);
+                //
+                //     return $collection->map(function ($result) use ($counts) {
+                //         $result['label'] = $result['model']->name . ' (' . $counts[$result['model']->id] . ')';
+                //         return $result;
+                //     });
+                // })
+                ->label(fn ($state) => $state->name." <span class=\"text-xs\">({$state->code})</span>")
                 ->reorderable('order')
                 ->help('This is a belongsToMany() relationship with a pivot attribute for tracking order, and is ajax searchable.'),
         ];

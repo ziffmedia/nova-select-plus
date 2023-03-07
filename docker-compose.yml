@@ -3,7 +3,7 @@ version: '3.7'
 services:
 
   web:
-    image: elephantbox/elephantbox:focal-p81n18-202208
+    image: elephantbox/elephantbox:jammy-p81n18-22.12.1
     command: run-services nginx,php-fpm
     environment:
       APP_NAME: demo

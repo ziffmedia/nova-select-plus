@@ -40,7 +40,6 @@ class Controller
             $search = $request->get('search');
 
             if (is_callable($field->ajaxSearchable)) {
-
                 $return = $this->application->call($field->ajaxSearchable, compact('query', 'request', 'search', 'resourceId'));
 
                 if ($return instanceof Builder) {
