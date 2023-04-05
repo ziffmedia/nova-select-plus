@@ -19,6 +19,13 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        Schema::create('states', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('code');
+            $table->timestamps();
+        });
+
         Schema::create('state_user_lived_in', function (Blueprint $table) {
             $table->bigInteger('state_id');
             $table->bigInteger('person_id');
@@ -29,13 +36,6 @@ return new class extends Migration
             $table->bigInteger('state_id');
             $table->bigInteger('person_id');
             $table->integer('order');
-            $table->timestamps();
-        });
-
-        Schema::create('states', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('code');
             $table->timestamps();
         });
     }
