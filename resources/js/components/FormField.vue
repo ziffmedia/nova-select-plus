@@ -8,7 +8,7 @@
           :options="options"
           :placeholder="placeholder"
           :loading="isLoading"
-          :disabled="field.readonly"
+          :disabled="currentField.readonly"
           :multiple="true"
           :selectable="selectable"
           :filterable="filterable"
@@ -32,7 +32,7 @@
             </svg>
           </template>
           <template #no-options>
-            <span v-if="field.isAjaxSearchable">
+            <span v-if="currentField.isAjaxSearchable">
               Type to search...
               <span v-if="ajaxSearchNoResults">Nothing found.</span>
             </span>
@@ -69,7 +69,7 @@
       </template>
 
       <span
-        v-if="field.isReorderable"
+        v-if="currentField.isReorderable"
         class="float-right text-sm ml-3 border-1 mt-2 mr-4"
       >
         <a
@@ -94,7 +94,7 @@
 </template>
 
 <script>
-import { FormField, HandlesValidationErrors } from 'laravel-nova'
+import { DependentFormField, HandlesValidationErrors } from 'laravel-nova'
 import vSelect from 'vue-select'
 import { debounce } from 'lodash'
 import { VueDraggableNext as vDraggable } from 'vue-draggable-next'
@@ -105,7 +105,7 @@ export default {
     vDraggable
   },
 
-  mixins: [FormField, HandlesValidationErrors],
+  mixins: [DependentFormField, HandlesValidationErrors],
 
   props: ['resourceName', 'resourceId', 'field'],
 
@@ -124,11 +124,11 @@ export default {
 
   methods: {
     setInitialValue () {
-      this.selected = this.field.value || []
+      this.selected = this.currentField.value || []
     },
 
     fill (formData) {
-      formData.append(this.field.attribute, JSON.stringify(this.selected))
+      this.fillIfVisible(formData, this.field.attribute, JSON.stringify(this.selected))
     },
 
     selectable () {

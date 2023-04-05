@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Laravel\Nova\Fields\Boolean;
+use Laravel\Nova\Fields\FormData;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -54,16 +56,6 @@ class Person extends Resource
                 ->rules('required', 'max:255')
                 ->help('The name is required'),
 
-            SelectPlus::make('States Lived In', 'statesLivedIn', State::class)
-                ->optionsQuery(function (Builder $query) {
-                    $query->where('name', 'NOT LIKE', 'C%');
-                })
-                // ->label(fn ($state) => $state->id . ' - ' . $state->name)
-                // ->ajaxSearchable(true)
-                // ->ajaxSearchable(fn ($query, $search) => $query->where('name', 'LIKE', "%{$search}%")->limit(2))
-                ->placeholder('Type to search')
-                ->help('This is a belongsToMany() relationship in the model'),
-
             SelectPlus::make('States Visited', 'statesVisited', State::class)
                 ->usingIndexLabel(function ($models) {
                     $value = $models->take(1)->pluck('name');
@@ -98,6 +90,17 @@ class Person extends Resource
                 ->label(fn ($state) => $state->name." <span class=\"text-xs\">({$state->code})</span>")
                 ->reorderable('order')
                 ->help('This is a belongsToMany() relationship with a pivot attribute for tracking order, and is ajax searchable.'),
+
+            SelectPlus::make('States Lived In', 'statesLivedIn', State::class)
+                ->optionsQuery(function (Builder $query) {
+                    $query->where('name', 'NOT LIKE', 'C%');
+                })
+                // ->label(fn ($state) => $state->id . ' - ' . $state->name)
+                // ->ajaxSearchable(true)
+                // ->ajaxSearchable(fn ($query, $search) => $query->where('name', 'LIKE', "%{$search}%")->limit(2))
+                ->placeholder('Type to search')
+                ->help('This is a belongsToMany() relationship in the model'),
+
         ];
     }
 

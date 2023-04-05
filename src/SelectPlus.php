@@ -234,7 +234,6 @@ class SelectPlus extends Field
 
     public function jsonSerialize(): array
     {
-        // @todo in next version, rename these to camel case
         return array_merge(parent::jsonSerialize(), [
             'isAjaxSearchable' => $this->ajaxSearchable !== null,
             'isAjaxSearchableEmptySearch' => (bool) $this->ajaxSearchableEmptySearch,
