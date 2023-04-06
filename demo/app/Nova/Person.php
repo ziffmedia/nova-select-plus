@@ -3,7 +3,9 @@
 namespace App\Nova;
 
 use Illuminate\Database\Eloquent\Builder;
+use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use ZiffMedia\NovaSelectPlus\SelectPlus;
@@ -86,7 +88,29 @@ class Person extends Resource
                 ->reorderable('order')
                 ->help('This is a belongsToMany() relationship with a pivot attribute for tracking order, and is ajax searchable.'),
 
+            // Select::make('Only Certain States', 'onlyCertainStates')
+            //     ->options([
+            //         'Yes' => 'Yes',
+            //         'No' => 'No'
+            //     ]),
+
             SelectPlus::make('States Lived In', 'statesLivedIn', State::class)
+                // ->dependsOn(
+                //     ['onlyCertainStates'],
+                //     function (SelectPlus $field, $request, $formData) {
+                //         if ($formData->onlyCertainStates == 'Yes') {
+                //             $field->optionsQuery(
+                //                 fn ($query) => $query->where('name', 'LIKE', 'L%')
+                //             );
+                //
+                //             // $field->ajaxSearchable(
+                //             //     fn($query, $search) => $query
+                //             //         ->where('name', 'LIKE', "%{$search}%")
+                //             //         ->where('name', 'LIKE', 'N%')
+                //             // );
+                //         }
+                //     }
+                // )
                 ->optionsQuery(function (Builder $query) {
                     $query->where('name', 'NOT LIKE', 'C%');
                 })

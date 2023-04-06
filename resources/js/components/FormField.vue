@@ -123,28 +123,60 @@ export default {
   },
 
   methods: {
+    onSyncedField() {
+       this.setup()
+    },
+
     setInitialValue () {
       this.selected = this.currentField.value || []
     },
 
-    fill (formData) {
-      this.fillIfVisible(formData, this.field.attribute, JSON.stringify(this.selected))
-    },
+    setup () {
+      this.placeholder = this.currentField?.extraAttributes?.placeholder
 
-    selectable () {
-      if (this.field['maxSelections'] <= 0) {
-        return true
-      }
+      // if there is no options (not yet supported), but needs the full list via ajax
+      if (this.currentField['isAjaxSearchable'] === false
+        || (this.currentField['isAjaxSearchable'] === true && this.currentField['isAjaxSearchableEmptySearch'] === true)
+      ) {
+        const params = {}
 
-      return this.selected.length < this.field['maxSelections']
-    },
+        if (this.currentField.dependsOn) {
+          Object.assign(params, this.currentField.dependsOn)
+        }
 
-    handleSearch: debounce(function (search, loading) {
-      if (this.field['isAjaxSearchable'] === false) {
+        Object.assign(params, { resourceId: this.resourceId })
+
+        Nova.request().get('/nova-vendor/select-plus/' + this.resourceName + '/' + this.currentField['relationshipName'], { params })
+          .then(resp => {
+            this.options = resp.data
+            this.isLoading = false
+          })
+
         return
       }
 
-      if (this.field['isAjaxSearchableEmptySearch'] === false && !search) {
+      this.isLoading = false
+      this.filterable = false
+    },
+
+    fill (formData) {
+      this.fillIfVisible(formData, this.currentField.attribute, JSON.stringify(this.selected))
+    },
+
+    selectable () {
+      if (this.currentField['maxSelections'] <= 0) {
+        return true
+      }
+
+      return this.selected.length < this.currentField['maxSelections']
+    },
+
+    handleSearch: debounce(function (search, loading) {
+      if (this.currentField['isAjaxSearchable'] === false) {
+        return
+      }
+
+      if (this.currentField['isAjaxSearchableEmptySearch'] === false && !search) {
         this.ajaxSearchNoResults = false
 
         return
@@ -152,9 +184,15 @@ export default {
 
       loading(true)
 
-      Nova.request().get('/nova-vendor/select-plus/' + this.resourceName + '/' + this.field['relationshipName'], {
-        params: { search: search, resourceId: this.resourceId }
-      })
+      const params = {}
+
+      if (this.currentField.dependsOn) {
+        Object.assign(params, this.currentField.dependsOn)
+      }
+
+      Object.assign(params, { search: search, resourceId: this.resourceId })
+
+      Nova.request().get('/nova-vendor/select-plus/' + this.resourceName + '/' + this.currentField['relationshipName'], { params })
         .then(resp => {
           this.options = resp.data
 
@@ -175,25 +213,7 @@ export default {
   },
 
   mounted () {
-    this.placeholder = this.field?.extraAttributes?.placeholder
-
-    // if there is no options (not yet supported), but needs the full list via ajax
-    if (this.field['isAjaxSearchable'] === false
-        || (this.field['isAjaxSearchable'] === true && this.field['isAjaxSearchableEmptySearch'] === true)
-    ) {
-      Nova.request().get('/nova-vendor/select-plus/' + this.resourceName + '/' + this.field['relationshipName'], {
-        params: { resourceId: this.resourceId }
-      })
-        .then(resp => {
-          this.options = resp.data
-          this.isLoading = false
-        })
-
-      return
-    }
-
-    this.isLoading = false
-    this.filterable = false
+    this.setup()
   }
 }
 </script>

@@ -22,6 +22,7 @@ class Controller
         /** @var SelectPlus $field */
         $field = $request->newResource()
             ->availableFields($request)
+            ->applyDependsOnWithDefaultValues($request)
             ->where('component', 'select-plus')
             ->where('attribute', $relationship)
             ->first();
