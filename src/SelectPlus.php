@@ -51,7 +51,7 @@ class SelectPlus extends Field
 
         $this->relationshipResource = $relationshipResource ?? ResourceRelationshipGuesser::guessResource($name);
 
-        if ( !class_exists($this->relationshipResource)) {
+        if (! class_exists($this->relationshipResource)) {
             throw new RuntimeException("Relationship Resource {$this->relationshipResource} is not a valid class");
         }
 
@@ -60,7 +60,7 @@ class SelectPlus extends Field
 
     public function label($label)
     {
-        if ( !(is_string($label) || is_callable($label))) {
+        if (! (is_string($label) || is_callable($label))) {
             throw new InvalidArgumentException('label() must be a string or callable');
         }
 
@@ -129,7 +129,7 @@ class SelectPlus extends Field
         // use base functionality to populate $this->value
         parent::resolve($resource, $attribute);
 
-        if ($this->ajaxSearchable && !is_callable($this->ajaxSearchable) && is_callable($this->label)) {
+        if ($this->ajaxSearchable && ! is_callable($this->ajaxSearchable) && is_callable($this->label)) {
             throw new RuntimeException('"'.$this->name.'" as a '.__CLASS__
                 .' has a dynamic (function) for label(), when using ajaxSearchable() and label(fn), ajaxSearchable() must also be dynamic (function).'
             );
@@ -215,7 +215,7 @@ class SelectPlus extends Field
             return [
                 $model->getKeyName() => $model->getKey(),
                 'label' => 'To Be Filled In',
-                'model' => $model,
+                'model' => $model
             ];
         });
 
