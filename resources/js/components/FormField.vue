@@ -15,6 +15,7 @@
           @search="handleSearch"
           @option:selected="$emit('field-changed')"
           @option:deselected="$emit('field-changed')"
+          :close-on-select="this.currentField.closeOnSelect"
         >
           <template #open-indicator="{ attributes }">
             <svg
