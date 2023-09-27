@@ -124,7 +124,11 @@ class SelectPlus extends Field
      */
     public function resolve($resource, $attribute = null)
     {
-        // use base functionality to populate $this->value
+        // use base functionality to populate $this->value, load in case Lazy Loading is disabled
+        if (method_exists($resource, $attribute)) {
+            $resource->load($attribute);
+        }
+
         parent::resolve($resource, $attribute);
 
         if ($this->ajaxSearchable && ! is_callable($this->ajaxSearchable) && is_callable($this->label)) {

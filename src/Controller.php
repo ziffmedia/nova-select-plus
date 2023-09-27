@@ -5,7 +5,9 @@ namespace ZiffMedia\NovaSelectPlus;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Collection;
+use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\Panel;
 use RuntimeException;
 
 class Controller
@@ -20,9 +22,11 @@ class Controller
     public function options(NovaRequest $request, $resource, $relationship)
     {
         /** @var SelectPlus $field */
-        $field = $request->newResource()
-            ->availableFields($request)
-            ->applyDependsOnWithDefaultValues($request)
+        $fields = $request->newResource()->availableFields($request)->filter(
+            fn ($field) => $field instanceof Field || $field instanceof Panel
+        );
+
+        $field = $fields->applyDependsOnWithDefaultValues($request)
             ->where('component', 'select-plus')
             ->where('attribute', $relationship)
             ->first();
