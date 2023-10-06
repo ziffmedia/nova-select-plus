@@ -3,8 +3,11 @@
 namespace ZiffMedia\NovaSelectPlus;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Enumerable;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Panel;
@@ -19,10 +22,12 @@ class Controller
         $this->application = $application;
     }
 
-    public function options(NovaRequest $request, $resource, $relationship)
+    public function options(NovaRequest $request, $resourceName, $relationship)
     {
+        $resource = $request->newResource();
+
         /** @var SelectPlus $field */
-        $fields = $request->newResource()->availableFields($request)->filter(
+        $fields = $resource->availableFields($request)->filter(
             fn ($field) => $field instanceof Field || $field instanceof Panel
         );
 
@@ -31,9 +36,39 @@ class Controller
             ->where('attribute', $relationship)
             ->first();
 
-        /** @var Builder $model */
-        $query = $field->relationshipResource::newModel()->newQuery();
+        $model = $resource->model();
 
+        if ($model->isRelation($field->attribute)) {
+            $result = $this->processQuery(
+                $model->{$field->attribute}()->getRelated()->newQuery(),
+                $request,
+                $field
+            )->get();
+
+            return response()->json($field->mapValuesToSelectionOptions($result));
+        }
+
+        if ($field->options && is_callable($field->options)) {
+            $result = $this->application->call($field->options, compact('request'));
+        } elseif ($field->options && (is_array($field->options) || ($field->options instanceof Enumerable))) {
+            $result = Collection::wrap($field->options);
+        } elseif (class_exists($field->options) && is_subclass_of($field->options, Model::class)) {
+            $result = $this->processQuery(
+                (new $field->options)->newQuery(),
+                $request,
+                $field
+            )->get();
+        } elseif ($field->options) {
+            throw new RuntimeException('options() must be an array, callable, class');
+        } else {
+            throw new RuntimeException("When {$field->attribute} is not a relation, you must also provide options()");
+        }
+
+        return response()->json($field->mapValuesToSelectionOptions($result));
+    }
+
+    protected function processQuery(Builder $query, NovaRequest $request, SelectPlus $field): Builder
+    {
         // pull out resourceId for use in querying callbacks
         $resourceId = $request->get('resourceId');
 
@@ -45,10 +80,10 @@ class Controller
             $search = $request->get('search');
 
             if (is_callable($field->ajaxSearchable)) {
-                $return = $this->application->call($field->ajaxSearchable, compact('query', 'request', 'search', 'resourceId'));
+                $result = $this->application->call($field->ajaxSearchable, compact('query', 'request', 'search', 'resourceId'));
 
-                if ($return instanceof Builder) {
-                    $query = $return;
+                if ($result instanceof Builder) {
+                    $query = $result;
                 }
             } elseif (is_string($field->ajaxSearchable)) {
                 $query->where($field->ajaxSearchable, 'LIKE', "%{$search}%");
@@ -62,10 +97,6 @@ class Controller
             }
         }
 
-        return response()->json($field->mapToSelectionValue(
-            (isset($return) && $return instanceof Collection)
-                ? $return
-                : $query->get()
-        ));
+        return $query;
     }
 }
