@@ -2,7 +2,9 @@
 
 namespace App\Nova;
 
+use App\Models\State as StateModel;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Http;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
@@ -53,7 +55,24 @@ class Person extends Resource
                 ->rules('required', 'max:255')
                 ->help('The name is required'),
 
-            SelectPlus::make('States Visited', 'statesVisited', State::class)
+            SelectPlus::make('State Born In', 'state_born_in')
+                ->options(StateModel::class)
+                ->ajaxSearchable(true)
+                ->maxSelections(1)
+            ,
+
+            SelectPlus::make('State Parents Born In', 'state_parents_born_in')
+                ->options([
+                    'Florida',
+                    'Louisiana',
+                    'Texas'
+                ])
+                ->maxSelections(2)
+            ,
+
+            SelectPlus::make('Favorite State', 'favoriteState'),
+
+            SelectPlus::make('States Visited', 'statesVisited')
                 ->usingIndexLabel(function ($models) {
                     $value = $models->take(1)->pluck('name');
 
@@ -71,7 +90,6 @@ class Person extends Resource
                 }, true)
 
                 // this is an example of hooking into the collection to result mapping, and doing an extra lookup for additional information
-
                 // ->withMapToSelectionValues(function (Collection $collection) {
                 //     $counts = DB::table('states')
                 //         ->select(['id', DB::raw('length(name) as count')])
@@ -84,6 +102,7 @@ class Person extends Resource
                 //         return $result;
                 //     });
                 // })
+
                 ->label(fn ($state) => $state->name." <span class=\"text-xs\">({$state->code})</span>")
                 ->reorderable('order')
                 ->help('This is a belongsToMany() relationship with a pivot attribute for tracking order, and is ajax searchable.'),
@@ -94,7 +113,7 @@ class Person extends Resource
             //         'No' => 'No'
             //     ]),
 
-            SelectPlus::make('States Lived In', 'statesLivedIn', State::class)
+            SelectPlus::make('States Lived In', 'statesLivedIn')
                 // ->dependsOn(
                 //     ['onlyCertainStates'],
                 //     function (SelectPlus $field, $request, $formData) {
@@ -111,15 +130,33 @@ class Person extends Resource
                 //         }
                 //     }
                 // )
-                ->optionsQuery(function (Builder $query) {
-                    $query->where('name', 'NOT LIKE', 'C%');
-                })
+                // ->optionsQuery(function (Builder $query) {
+                //     $query->where('name', 'LIKE', 'C%');
+                // })
                 // ->label(fn ($state) => $state->id . ' - ' . $state->name)
                 // ->ajaxSearchable(true)
-                // ->ajaxSearchable(fn ($query, $search) => $query->where('name', 'LIKE', "%{$search}%")->limit(2))
+                ->ajaxSearchable(fn ($query, $search) => $query->where('name', 'LIKE', "%{$search}%")->limit(2))
                 ->placeholder('Type to search')
                 ->help('This is a belongsToMany() relationship in the model'),
 
+            SelectPlus::make('Favorite Coffee', 'favorite_coffee')
+                ->options(function ($request = null) {
+                    $coffees = Http::get('https://api.sampleapis.com/coffee/hot')
+                        ->collect()
+                        ->map(fn ($coffee) => ['value' => $coffee['id'], 'label' => $coffee['title']]);
+
+                    if ($request->has('search')) {
+                        $coffees = $coffees->filter(fn ($coffee) => str_contains($coffee['label'], $request->get('search')));
+                    }
+
+                    return $coffees->values();
+                })
+                ->fillUsing(function ($request, $model, $attribute) {
+                    $model->favorite_coffee = collect(json_decode($request->get('favorite_coffee'), true))
+                        ->pluck('label')
+                        ->toArray();
+                })
+                // ->ajaxSearchable(true)
         ];
     }
 
