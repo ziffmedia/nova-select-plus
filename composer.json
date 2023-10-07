@@ -25,14 +25,5 @@
                 "ZiffMedia\\NovaSelectPlus\\FieldServiceProvider"
             ]
         }
-    },
-  "repositories": [
-    {
-      "type": "composer",
-      "url": "https://repo.packagist.com/ziffdavis/"
-    },
-    {
-      "packagist.org": false
     }
-  ]
 }
