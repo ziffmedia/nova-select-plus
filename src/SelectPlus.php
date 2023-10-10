@@ -43,6 +43,8 @@ class SelectPlus extends Field
 
     public $reorderable = null;
 
+    public $closeOnSelect = false;
+
     public function __construct($name, $attribute = null, $relationshipResource = null, $label = 'name')
     {
         parent::__construct($name, $attribute);
@@ -246,7 +248,14 @@ class SelectPlus extends Field
             'valueForDetailDisplay' => $this->valueForDetailDisplay,
             'maxSelections' => $this->maxSelections,
             'isReorderable' => $this->reorderable !== null,
+            'closeOnSelect' => $this->closeOnSelect,
         ]);
+    }
+
+    public function closeOnSelect($value = true)
+    {
+        $this->closeOnSelect = $value;
+        return $this;
     }
 
     protected function labelize(Model $model)
