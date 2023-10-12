@@ -144,7 +144,7 @@ export default {
           Object.assign(params, this.currentField.dependsOn)
         }
 
-        Object.assign(params, { resourceId: this.resourceId })
+        Object.assign(params, { resourceId: this.resourceId , fieldId: this.currentField['fieldId']})
 
         Nova.request().get('/nova-vendor/select-plus/' + this.resourceName + '/' + this.currentField['relationshipName'], { params })
           .then(resp => {
@@ -190,7 +190,7 @@ export default {
         Object.assign(params, this.currentField.dependsOn)
       }
 
-      Object.assign(params, { search: search, resourceId: this.resourceId })
+      Object.assign(params, { search: search, resourceId: this.resourceId , fieldId: this.currentField['fieldId']})
 
       Nova.request().get('/nova-vendor/select-plus/' + this.resourceName + '/' + this.currentField['relationshipName'], { params })
         .then(resp => {
@@ -213,6 +213,8 @@ export default {
   },
 
   mounted () {
+    console.log(this.currentField)
+
     this.setup()
   }
 }

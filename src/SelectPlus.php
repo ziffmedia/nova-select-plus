@@ -21,6 +21,10 @@ class SelectPlus extends Field
 {
     use SupportsDependentFields;
 
+    public static array $selectPlusFields = [];
+
+    public string $fieldId;
+
     public $component = 'select-plus';
 
     public $label = 'name';
@@ -65,6 +69,15 @@ class SelectPlus extends Field
             $this->label($label);
         }
     }
+
+    public function withFieldId(string $fieldId): static
+    {
+        $this->fieldId = $fieldId;
+
+        static::$selectPlusFields[$fieldId] = $this;
+
+        return $this;
+            }
 
     /**
      * @param class-string<Model>|Collection|array|callable $options
@@ -145,7 +158,7 @@ class SelectPlus extends Field
         $attribute = $this->attribute;
 
         // state checking: can't use options() and relations at same time
-        if ($this->options && $resource->isRelation($attribute)) {
+        if ($this->options && ($resource instanceof Model && $resource->isRelation($attribute))) {
             throw new RuntimeException("{$attribute} field cannot use options() with a relation");
         }
 
@@ -390,6 +403,7 @@ class SelectPlus extends Field
     public function jsonSerialize(): array
     {
         return array_merge(parent::jsonSerialize(), [
+            'fieldId' => $this->fieldId,
             'isAjaxSearchable' => $this->ajaxSearchable !== null,
             'isAjaxSearchableEmptySearch' => (bool) $this->ajaxSearchableEmptySearch,
             'relationshipName' => $this->attribute,
