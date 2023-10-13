@@ -25,20 +25,29 @@ class Controller
     public function options(NovaRequest $request, $resourceName, $relationship)
     {
         $resource = $request->newResource();
+        $availableFields = $resource->availableFields($request);
 
+        if ($request->has('fieldId')) {
+            $field = SelectPlus::$selectPlusFields[$request->get('fieldId')];
+        }
+
+        if (! $field) {
+            $field = $availableFields
+                ->filter(fn ($field) => $field instanceof Field || $field instanceof Panel)
+                ->applyDependsOnWithDefaultValues($request)
+                ->where('component', 'select-plus')
+                ->where('attribute', $relationship)
+                ->first();
+        }
         /** @var SelectPlus $field */
-        $fields = $resource->availableFields($request)->filter(
-            fn ($field) => $field instanceof Field || $field instanceof Panel
-        );
 
-        $field = $fields->applyDependsOnWithDefaultValues($request)
-            ->where('component', 'select-plus')
-            ->where('attribute', $relationship)
-            ->first();
+        if (! $field) {
+            throw new RuntimeException('A field was not identified, if this field is nested, use withFieldId($uniqueName) so options can be loaded.');
+        }
 
         $model = $resource->model();
 
-        if ($model->isRelation($field->attribute)) {
+        if ($field->options && $model->isRelation($field->attribute)) {
             $result = $this->processQuery(
                 $model->{$field->attribute}()->getRelated()->newQuery(),
                 $request,
