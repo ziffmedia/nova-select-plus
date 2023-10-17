@@ -23,7 +23,7 @@ class SelectPlus extends Field
 
     public static array $selectPlusFields = [];
 
-    public string $fieldId;
+    public string|null $fieldId = null;
 
     public $component = 'select-plus';
 
@@ -77,7 +77,7 @@ class SelectPlus extends Field
         static::$selectPlusFields[$fieldId] = $this;
 
         return $this;
-            }
+    }
 
     /**
      * @param class-string<Model>|Collection|array|callable $options
