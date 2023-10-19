@@ -27,6 +27,9 @@ class Controller
         $resource = $request->newResource();
         $availableFields = $resource->availableFields($request);
 
+        /** @var SelectPlus $field */
+        $field = null;
+
         if ($request->has('fieldId')) {
             $field = SelectPlus::$selectPlusFields[$request->get('fieldId')];
         }
@@ -39,7 +42,6 @@ class Controller
                 ->where('attribute', $relationship)
                 ->first();
         }
-        /** @var SelectPlus $field */
 
         if (! $field) {
             throw new RuntimeException('A field was not identified, if this field is nested, use withFieldId($uniqueName) so options can be loaded.');
@@ -47,7 +49,7 @@ class Controller
 
         $model = $resource->model();
 
-        if ($field->options && $model->isRelation($field->attribute)) {
+        if ($model->isRelation($field->attribute)) {
             $result = $this->processQuery(
                 $model->{$field->attribute}()->getRelated()->newQuery(),
                 $request,
