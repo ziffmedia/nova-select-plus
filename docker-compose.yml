@@ -3,7 +3,7 @@ version: '3.7'
 services:
 
   web:
-    image: elephantbox/elephantbox:jammy-p81n18-22.12.1
+    image: elephantbox/elephantbox:jammy-p82n19-latest
     command: run-services nginx,php-fpm
     environment:
       APP_NAME: demo
@@ -12,6 +12,6 @@ services:
       PHP_IDE_CONFIG: serverName=localhost
     working_dir: /app/demo
     ports:
-      - 8000:80
+      - "8000:80"
     volumes:
       - .:/app

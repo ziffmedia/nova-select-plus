@@ -3,6 +3,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Fix for Nova 4 overflow hidden issue when using this component */
+div.relative.overflow-hidden:has(.nova-select-plus-vs) {
+    overflow: visible;
+}
+
 @layer components {
     .nova-select-plus-vs .vs__selected {
         @apply min-h-6 border-0 text-xs font-bold rounded px-2 py-1 space-x-1 bg-primary-50 text-primary-600 dark:bg-primary-500 dark:text-gray-900;
