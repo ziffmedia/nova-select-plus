@@ -134,17 +134,12 @@ export default {
     },
 
     vueSelectCalculatePosition (dropdownList, component, { width, top, left }) {
-      // @todo - this is not yet applying styles in the UI, for unknown reasons, maybe it needs to be a diff class
-      if (document.documentElement.classList.contains('dark')) {
-        dropdownList.classList.add('dark')
-      }
-
       // default built-in logic
       dropdownList.style.top = top
       dropdownList.style.left = left
       dropdownList.style.width = width
 
-      // add our custom class to the node that is appended to body
+      // add our custom class to the node that is appended to body, see the stylesheet field.css
       dropdownList.classList.add('nova-select-plus-vs')
     },
 

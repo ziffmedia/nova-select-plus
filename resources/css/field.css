@@ -4,6 +4,13 @@
 @tailwind utilities;
 
 @layer components {
+    /* Same Element */
+    .nova-select-plus-vs.vs__dropdown-menu {
+        @apply border p-0 my-1 rounded-lg shadow divide-y bg-white border-gray-200 divide-gray-100 dark:bg-gray-900 dark:border-gray-700 dark:divide-gray-800;
+    }
+
+    /* Sub-elements of .nova-select-plus-vs */
+
     .nova-select-plus-vs .vs__selected {
         @apply min-h-6 border-0 text-xs font-bold rounded px-2 py-1 space-x-1 bg-primary-50 text-primary-600 dark:bg-primary-500 dark:text-gray-900;
     }
@@ -14,10 +21,6 @@
 
     :is(.dark .nova-select-plus-vs .vs__selected:hover) {
         opacity: inherit;
-    }
-
-    .nova-select-plus-vs .vs__dropdown-menu {
-        @apply border p-0 my-1 rounded-lg shadow divide-y bg-white border-gray-200 divide-gray-100 dark:bg-gray-900 dark:border-gray-700 dark:divide-gray-800;
     }
 
     .nova-select-plus-vs .vs__dropdown-toggle {
