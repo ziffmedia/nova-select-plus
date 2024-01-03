@@ -3,9 +3,7 @@
 namespace App\Nova;
 
 use Illuminate\Database\Eloquent\Builder;
-use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use ZiffMedia\NovaSelectPlus\SelectPlus;
@@ -119,7 +117,6 @@ class Person extends Resource
                 // ->ajaxSearchable(fn ($query, $search) => $query->where('name', 'LIKE', "%{$search}%")->limit(2))
                 ->placeholder('Type to search')
                 ->help('This is a belongsToMany() relationship in the model'),
-
         ];
     }
 

@@ -3,12 +3,14 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Fix for Nova 4 overflow hidden issue when using this component */
-div.relative.overflow-hidden:has(.nova-select-plus-vs) {
-    overflow: visible;
-}
-
 @layer components {
+    /* Same Element */
+    .nova-select-plus-vs.vs__dropdown-menu {
+        @apply border p-0 my-1 rounded-lg shadow divide-y bg-white border-gray-200 divide-gray-100 dark:bg-gray-900 dark:border-gray-700 dark:divide-gray-800;
+    }
+
+    /* Sub-elements of .nova-select-plus-vs */
+
     .nova-select-plus-vs .vs__selected {
         @apply min-h-6 border-0 text-xs font-bold rounded px-2 py-1 space-x-1 bg-primary-50 text-primary-600 dark:bg-primary-500 dark:text-gray-900;
     }
@@ -19,10 +21,6 @@ div.relative.overflow-hidden:has(.nova-select-plus-vs) {
 
     :is(.dark .nova-select-plus-vs .vs__selected:hover) {
         opacity: inherit;
-    }
-
-    .nova-select-plus-vs .vs__dropdown-menu {
-        @apply border p-0 my-1 rounded-lg shadow divide-y bg-white border-gray-200 divide-gray-100 dark:bg-gray-900 dark:border-gray-700 dark:divide-gray-800;
     }
 
     .nova-select-plus-vs .vs__dropdown-toggle {
@@ -49,14 +47,6 @@ div.relative.overflow-hidden:has(.nova-select-plus-vs) {
         @apply fill-current hover:opacity-75 dark:hover:opacity-50;
     }
 
-    .nova-select-plus-vd .vd__item {
-        @apply block font-bold mt-1 mx-0.5 p-2 rounded-lg cursor-pointer bg-primary-50 text-primary-600 dark:bg-primary-500 dark:text-gray-900;
-    }
-
-    .nova-select-plus-vd .vd__item_drag_icon {
-        @apply float-right fill-current;
-    }
-
     .nova-select-plus-vs .vs__dropdown-option {
         @apply text-sm leading-normal font-semibold px-3 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-800;
     }
@@ -64,5 +54,15 @@ div.relative.overflow-hidden:has(.nova-select-plus-vs) {
     .nova-select-plus-vs .vs__dropdown-option--selected,
     .nova-select-plus-vs .vs__dropdown-option--highlight {
         @apply bg-primary-500 hover:bg-primary-500 text-white dark:hover:bg-primary-500 dark:text-gray-900 dark:hover:text-gray-900;
+    }
+
+    /* Vue Draggable Customization */
+
+    .nova-select-plus-vd .vd__item {
+        @apply block font-bold mt-1 mx-0.5 p-2 rounded-lg cursor-pointer bg-primary-50 text-primary-600 dark:bg-primary-500 dark:text-gray-900;
+    }
+
+    .nova-select-plus-vd .vd__item_drag_icon {
+        @apply float-right fill-current;
     }
 }

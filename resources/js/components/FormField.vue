@@ -2,7 +2,7 @@
   <DefaultField :field="field" :errors="errors" :show-help-text="showHelpText">
     <template #field>
       <template v-if="!isInReorderMode">
-        <v-select
+        <vue-select
           class="nova-select-plus-vs"
           v-model="selected"
           :options="options"
@@ -15,6 +15,8 @@
           @search="handleSearch"
           @option:selected="$emit('field-changed')"
           @option:deselected="$emit('field-changed')"
+          append-to-body
+          :calculate-position="vueSelectCalculatePosition"
         >
           <template #open-indicator="{ attributes }">
             <svg
@@ -46,10 +48,10 @@
           <template #selected-option="option">
             <span v-html="option.label" />
           </template>
-        </v-select>
+        </vue-select>
       </template>
       <template v-else>
-        <v-draggable
+        <vue-draggable
           class="nova-select-plus-vd"
           v-model="selected"
           @start="isDragging = true"
@@ -65,7 +67,7 @@
               <path fill="currentColor" d="M432 288H16c-8.8 0-16 7.2-16 16v16c0 8.8 7.2 16 16 16h416c8.8 0 16-7.2 16-16v-16c0-8.8-7.2-16-16-16zm0-112H16c-8.8 0-16 7.2-16 16v16c0 8.8 7.2 16 16 16h416c8.8 0 16-7.2 16-16v-16c0-8.8-7.2-16-16-16z"></path>
             </svg>
           </span>
-        </v-draggable>
+        </vue-draggable>
       </template>
 
       <span
@@ -95,14 +97,14 @@
 
 <script>
 import { DependentFormField, HandlesValidationErrors } from 'laravel-nova'
-import vSelect from 'vue-select'
+import vueSelect from 'vue-select'
 import { debounce } from 'lodash'
-import { VueDraggableNext as vDraggable } from 'vue-draggable-next'
+import { VueDraggableNext as vueDraggable } from 'vue-draggable-next'
 
 export default {
   components: {
-    vSelect,
-    vDraggable
+    vueSelect,
+    vueDraggable
   },
 
   mixins: [DependentFormField, HandlesValidationErrors],
@@ -129,6 +131,16 @@ export default {
 
     setInitialValue () {
       this.selected = this.currentField.value || []
+    },
+
+    vueSelectCalculatePosition (dropdownList, component, { width, top, left }) {
+      // default built-in logic
+      dropdownList.style.top = top
+      dropdownList.style.left = left
+      dropdownList.style.width = width
+
+      // add our custom class to the node that is appended to body, see the stylesheet field.css
+      dropdownList.classList.add('nova-select-plus-vs')
     },
 
     setup () {
