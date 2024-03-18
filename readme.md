@@ -115,7 +115,7 @@ SelectPlus::make('States Lived In', 'statesLivedIn', State::class)
     {
         return $this->belongsToMany(State::class, 'state_user_visited')
             ->withPivot('order')
-            ->orderBy('order')
+            ->orderByPivot('order')
             ->withTimestamps();
     }
 
