@@ -124,8 +124,9 @@ class SelectPlus extends Field
      */
     public function resolve($resource, $attribute = null)
     {
-        // use base functionality to populate $this->value, load in case Lazy Loading is disabled
-        if (method_exists($resource, $attribute)) {
+        // Use base functionality to populate $this->value, load in case Lazy Loading is
+        // disabled, but check if the relation is already loaded to prevent redundancy.
+        if (method_exists($resource, $attribute) && !$resource->relationLoaded($attribute)) {
             $resource->load($attribute);
         }
 
