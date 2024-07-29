@@ -151,3 +151,20 @@ returning a Collection will populate the dropdown:
 ```
 
 ![alt text](https://github.com/ziffmedia/nova-select-plus/raw/master/docs/6-ajaxSearchable.gif "reorder a list")
+
+### Performance Considerations
+
+When integrating SelectPlus in Nova’s index pages, optimizing the loading and querying of related models to ensure smooth and efficient performance is crucial.
+
+### Eager Loading Related Models:
+Utilize Laravel’s `$with` method to eagerly load related models when querying the database. This minimizes the number of queries executed and reduces database load, enhancing performance.
+
+```php
+    // inside the Nova resource:
+    $with = ['statesVisited'];
+
+    public function fields()
+    {
+        SelectPlus::make('States Visited', 'statesVisited', State::class);
+    }
+```
