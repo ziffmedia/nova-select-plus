@@ -34,7 +34,7 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
-            "ZiffMedia\\NovaSelectPlus\\": "../src/"
+            "HenriqueSPin\\NovaSelectPlus\\": "../src/"
         }
     },
     "autoload-dev": {

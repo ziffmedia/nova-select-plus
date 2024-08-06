@@ -1,6 +1,6 @@
 <?php
 
-namespace ZiffMedia\NovaSelectPlus;
+namespace HenriqueSPin\NovaSelectPlus;
 
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;

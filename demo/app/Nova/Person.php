@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use ZiffMedia\NovaSelectPlus\SelectPlus;
+use HenriqueSPin\NovaSelectPlus\SelectPlus;
 
 class Person extends Resource
 {

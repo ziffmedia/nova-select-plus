@@ -1,28 +1,32 @@
 {
-    "name": "ziffmedia/nova-select-plus",
+    "name": "henriquespin/nova-select-plus",
     "description": "A Nova select field for simple and complex select inputs",
     "type": "library",
     "license": "MIT",
     "keywords": ["vue-select", "laravel", "nova", "select", "ajax"],
     "authors": [
         {
-            "name": "Ralph Schindler",
+            "name": "João Henrique Silva Mendonça",
+            "email": "henrique@freaks.com.br"
+        },
+        {
+            "name": "Ralph Schindler (former)",
             "email": "ralph.schindler@ziffmedia.com"
         }
     ],
     "require": {
-        "php": "^7.3|^8.0",
+        "php": "^8.0",
         "laravel/nova": "^4.0"
     },
     "autoload": {
         "psr-4": {
-            "ZiffMedia\\NovaSelectPlus\\": "src/"
+            "HenriqueSPin\\NovaSelectPlus\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "ZiffMedia\\NovaSelectPlus\\FieldServiceProvider"
+                "HenriqueSPin\\NovaSelectPlus\\FieldServiceProvider"
             ]
         }
     }

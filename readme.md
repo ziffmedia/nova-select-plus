@@ -1,19 +1,20 @@
 # Nova Select Plus
 
+Based on ZiffMedia Nova Select Plus. Thanks for the great work!
+
 ## Installation
 
 ```
-composer require ziffmedia/nova-select-plus
+composer require henriquespin/nova-select-plus
 ```
 
 ## Versions &amp; Compatibility
 
-- Version `^1.0` supports Nova 2-3
-- Version `^2.0` supports Nova 4 (with Vue 3, dark mode support, etc)
+- Version `^1.0` supports Nova 4 (with Vue 3, dark mode support, etc)
 
 ## Description &amp; Use Cases
 
-![alt text](https://github.com/ziffmedia/nova-select-plus/raw/master/docs/0-intro.gif "Intro Gif")
+![alt text](https://github.com/henriquespin/nova-select-plus/raw/master/docs/0-intro.gif "Intro Gif")
 
 This Nova component was built to satisfy the use cases just beyond Nova's built-in `<select>` component. Here are
 some scenarios where you might want `SelectPlus` (which uses `vue-select`) over the simple `Select`:
@@ -41,7 +42,7 @@ time, to populate a pivot value useful for ordering relations.
 ## Usage
 
 ```php
-use ZiffMedia\NovaSelectPlus\SelectPlus;
+use HenriqueSPin\NovaSelectPlus\SelectPlus;
 ```
 
 ```php
@@ -78,7 +79,7 @@ SelectPlus::make('States Visited', 'statesVisited', State::class)
 
 Default is to produce a count of the number of items on the index and detail screen
 
-![alt text](https://github.com/ziffmedia/nova-select-plus/raw/master/docs/1-default.png "Default Index")
+![alt text](https://github.com/henriquespin/nova-select-plus/raw/master/docs/1-default.png "Default Index")
 
 If a *string* name is provided, the name attribute is plucked and comma joined:
 
@@ -87,7 +88,7 @@ SelectPlus::make('States Lived In', 'statesLivedIn', State::class)
   ->usingIndexLabel('name'),
 ```
 
-![alt text](https://github.com/ziffmedia/nova-select-plus/raw/master/docs/2-usingIndexLabel-string.png "string and comma separated")
+![alt text](https://github.com/henriquespin/nova-select-plus/raw/master/docs/2-usingIndexLabel-string.png "string and comma separated")
 
 If a closure is provided, it will be called, and the value will be utilized.  If the value is a string, it will be placed:
 
@@ -96,7 +97,7 @@ SelectPlus::make('States Lived In', 'statesLivedIn', State::class)
   ->usingIndexLabel(fn($models) => $models->first()->name ?? ''),
 ```
 
-![alt text](https://github.com/ziffmedia/nova-select-plus/raw/master/docs/3-usingIndexLabel-callback.png "return just the first name")
+![alt text](https://github.com/henriquespin/nova-select-plus/raw/master/docs/3-usingIndexLabel-callback.png "return just the first name")
 
 If an array is returned, the Index and Detail screens will produce a `<ol>` or `<ul>` list:
 
@@ -105,7 +106,7 @@ SelectPlus::make('States Lived In', 'statesLivedIn', State::class)
   ->usingIndexLabel(fn($models) => $models->pluck('name')),
 ```
 
-![alt text](https://github.com/ziffmedia/nova-select-plus/raw/master/docs/4-usingDetailLabel-array.png "array of values")
+![alt text](https://github.com/henriquespin/nova-select-plus/raw/master/docs/4-usingDetailLabel-array.png "array of values")
 
 #### `->reorderable(string $pivotOrderAttribute)` - Ability to reorder multiple selects
 
@@ -124,7 +125,7 @@ SelectPlus::make('States Lived In', 'statesLivedIn', State::class)
         ->reorderable('order'),
 ```
 
-![alt text](https://github.com/ziffmedia/nova-select-plus/raw/master/docs/5-reorderable.gif "reorder a list")
+![alt text](https://github.com/henriquespin/nova-select-plus/raw/master/docs/5-reorderable.gif "reorder a list")
 
 #### `->optionsQuery(closure)` - Ability to apply changes to options query object
 
@@ -150,7 +151,7 @@ returning a Collection will populate the dropdown:
         })
 ```
 
-![alt text](https://github.com/ziffmedia/nova-select-plus/raw/master/docs/6-ajaxSearchable.gif "reorder a list")
+![alt text](https://github.com/henriquespin/nova-select-plus/raw/master/docs/6-ajaxSearchable.gif "reorder a list")
 
 ### Performance Considerations
 
