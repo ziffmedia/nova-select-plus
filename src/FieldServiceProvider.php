@@ -1,6 +1,6 @@
 <?php
 
-namespace HenriqueSPin\NovaSelectPlus;
+namespace ZiffMedia\NovaSelectPlus;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
