@@ -13,8 +13,8 @@
           :selectable="selectable"
           :filterable="filterable"
           @search="handleSearch"
-          @option:selected="$emit('field-changed')"
-          @option:deselected="$emit('field-changed')"
+          @option:selected="optionSelected"
+          @option:deselected="optionDeselected"
           append-to-body
           :calculate-position="vueSelectCalculatePosition"
         >
@@ -125,6 +125,22 @@ export default {
   },
 
   methods: {
+    optionSelected(option) {
+        this.$emit("field-changed");
+
+        if (this.field) {
+            this.emitFieldValueChange(this.fieldAttribute, option);
+        }
+    },
+
+    optionDeselected(option) {
+        this.$emit("field-changed");
+
+        if (this.field) {
+            this.emitFieldValueChange(this.fieldAttribute, option);
+        }
+    },
+    
     onSyncedField() {
        this.setup()
     },
