@@ -122,7 +122,7 @@ class SelectPlus extends Field
      * @param  mixed|resource|Model  $resource
      * @param  null  $attribute
      */
-    public function resolve($resource, $attribute = null)
+    public function resolve($resource, ?string $attribute = null):void
     {
         // use base functionality to populate $this->value, load in case Lazy Loading is disabled
         if (method_exists($resource, $attribute)) {
