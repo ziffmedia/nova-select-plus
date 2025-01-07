@@ -140,7 +140,7 @@ class SelectPlus extends Field
      * @param  mixed|resource|Model  $resource
      * @param  null  $attribute
      */
-    public function resolve($resource, ?string $attribute = null):void
+    public function resolve($resource, $attribute = null): void
     {
         $attribute = $this->attribute;
 
