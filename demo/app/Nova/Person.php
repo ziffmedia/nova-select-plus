@@ -141,6 +141,7 @@ class Person extends Resource
                 ->help('This is a belongsToMany() relationship in the model'),
 
             SelectPlus::make('Favorite Coffee', 'favorite_coffee')
+                ->required()
                 ->options(function ($request = null) {
                     $coffees = Http::get('https://api.sampleapis.com/coffee/hot')
                         ->collect()

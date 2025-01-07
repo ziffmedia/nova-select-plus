@@ -23,8 +23,16 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        Schema::create('cities', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->foreignId('state_id');
+            $table->timestamps();
+        });
+
         Schema::create('states', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('capital_city_id')->nullable();
             $table->string('name');
             $table->string('code');
             $table->timestamps();
