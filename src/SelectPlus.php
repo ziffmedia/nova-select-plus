@@ -159,7 +159,7 @@ class SelectPlus extends Field
 
         // use base functionality to populate $this->value, load in case Lazy Loading is disabled
         if (method_exists($resource, $attribute)) {
-            $resource->load($attribute);
+            $resource->loadMissing($attribute);
         }
 
         parent::resolve($resource, $attribute);
