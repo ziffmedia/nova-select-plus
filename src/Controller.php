@@ -31,10 +31,20 @@ class Controller
             fn ($field) => $field instanceof Field || $field instanceof Panel
         );
 
-        $field = $fields->applyDependsOnWithDefaultValues($request)
-            ->where('component', 'select-plus')
-            ->where('attribute', $relationship)
-            ->first();
+        if ($request->has('fieldId')) {
+            $field = SelectPlus::$selectPlusFields[$request->get('fieldId')];
+        }
+
+        if (! $field) {
+            $field = $fields->applyDependsOnWithDefaultValues($request)
+                ->where('component', 'select-plus')
+                ->where('attribute', $relationship)
+                ->first();
+        }
+
+        if (! $field) {
+            throw new RuntimeException('A field was not identified, if this field is nested, use withFieldId($uniqueName) so options can be loaded.');
+        }
 
         $model = $resource->model();
 

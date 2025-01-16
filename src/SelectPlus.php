@@ -21,6 +21,10 @@ class SelectPlus extends Field
 {
     use SupportsDependentFields;
 
+    public static array $selectPlusFields = [];
+
+    public string $fieldId;
+
     public $component = 'select-plus';
 
     public $label = 'name';
@@ -64,6 +68,15 @@ class SelectPlus extends Field
 
             $this->label($label);
         }
+    }
+
+    public function withFieldId(string $fieldId): static
+    {
+        $this->fieldId = $fieldId;
+
+        static::$selectPlusFields[$fieldId] = $this;
+
+        return $this;
     }
 
     /**
@@ -390,6 +403,7 @@ class SelectPlus extends Field
     public function jsonSerialize(): array
     {
         return array_merge(parent::jsonSerialize(), [
+            'fieldId' => $this->fieldId,
             'isAjaxSearchable' => $this->ajaxSearchable !== null,
             'isAjaxSearchableEmptySearch' => (bool) $this->ajaxSearchableEmptySearch,
             'relationshipName' => $this->attribute,

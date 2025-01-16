@@ -13,8 +13,8 @@
           :selectable="selectable"
           :filterable="filterable"
           @search="handleSearch"
-          @option:selected="optionSelected"
-          @option:deselected="optionDeselected"
+          @option:selected="optionChanged"
+          @option:deselected="optionChanged"
           append-to-body
           :calculate-position="vueSelectCalculatePosition"
         >
@@ -125,7 +125,7 @@ export default {
   },
 
   methods: {
-    optionSelected(option) {
+    optionChanged (option) {
         this.$emit("field-changed");
 
         if (this.field) {
@@ -133,15 +133,7 @@ export default {
         }
     },
 
-    optionDeselected(option) {
-        this.$emit("field-changed");
-
-        if (this.field) {
-            this.emitFieldValueChange(this.fieldAttribute, option);
-        }
-    },
-    
-    onSyncedField() {
+    onSyncedField () {
        this.setup()
     },
 
@@ -172,7 +164,7 @@ export default {
           Object.assign(params, this.currentField.dependsOn)
         }
 
-        Object.assign(params, { resourceId: this.resourceId })
+        Object.assign(params, { resourceId: this.resourceId, fieldId: this.currentField['fieldId'] })
 
         Nova.request().get('/nova-vendor/select-plus/' + this.resourceName + '/' + this.currentField['relationshipName'], { params })
           .then(resp => {
@@ -218,7 +210,7 @@ export default {
         Object.assign(params, this.currentField.dependsOn)
       }
 
-      Object.assign(params, { search: search, resourceId: this.resourceId })
+      Object.assign(params, { search: search, resourceId: this.resourceId, fieldId: this.currentField['fieldId'] })
 
       Nova.request().get('/nova-vendor/select-plus/' + this.resourceName + '/' + this.currentField['relationshipName'], { params })
         .then(resp => {
