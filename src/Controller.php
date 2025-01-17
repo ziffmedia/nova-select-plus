@@ -26,9 +26,11 @@ class Controller
     {
         $resource = $request->newResource();
 
+        $field = null;
+
         /** @var SelectPlus $field */
         $fields = $resource->availableFields($request)->filter(
-            fn ($field) => $field instanceof Field || $field instanceof Panel
+            fn ($f) => $f instanceof Field || $f instanceof Panel
         );
 
         if ($request->has('fieldId')) {
