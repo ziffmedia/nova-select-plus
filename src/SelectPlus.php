@@ -23,7 +23,7 @@ class SelectPlus extends Field
 
     public static array $selectPlusFields = [];
 
-    public string $fieldId;
+    public ?string $fieldId = null;
 
     public $component = 'select-plus';
 
