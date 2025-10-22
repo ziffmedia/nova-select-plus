@@ -11,6 +11,7 @@ use Illuminate\Support\Enumerable;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Panel;
+use Laravel\Scout\Builder as ScoutBuilder;
 use RuntimeException;
 
 class Controller
@@ -79,7 +80,7 @@ class Controller
         return response()->json($field->mapValuesToSelectionOptions($result));
     }
 
-    protected function processQuery(Builder $query, NovaRequest $request, SelectPlus $field): Builder
+    protected function processQuery(Builder $query, NovaRequest $request, SelectPlus $field): Builder|ScoutBuilder
     {
         // pull out resourceId for use in querying callbacks
         $resourceId = $request->get('resourceId');
@@ -94,7 +95,7 @@ class Controller
             if (is_callable($field->ajaxSearchable)) {
                 $result = $this->application->call($field->ajaxSearchable, compact('query', 'request', 'search', 'resourceId'));
 
-                if ($result instanceof Builder) {
+                if ($result instanceof Builder || $result instanceof ScoutBuilder) {
                     $query = $result;
                 }
             } elseif (is_string($field->ajaxSearchable)) {
