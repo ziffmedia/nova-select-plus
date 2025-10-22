@@ -345,7 +345,7 @@ class SelectPlus extends Field
         $model->{$attribute} = $values->toArray();
     }
 
-    public function mapSelectionOptionsToValues($selectionOptions, string $pluck = null)
+    public function mapSelectionOptionsToValues($selectionOptions, ?string $pluck = null)
     {
 
     }
