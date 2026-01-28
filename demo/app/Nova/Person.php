@@ -6,6 +6,7 @@ use App\Models\State as StateModel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Http;
 use Laravel\Nova\Fields\Boolean;
+use Laravel\Nova\Fields\FormData;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
@@ -108,29 +109,34 @@ class Person extends Resource
                 ->reorderable('order')
                 ->help('This is a belongsToMany() relationship with a pivot attribute for tracking order, and is ajax searchable.'),
 
-            // Select::make('Only Certain States', 'onlyCertainStates')
-            //     ->options([
-            //         'Yes' => 'Yes',
-            //         'No' => 'No'
-            //     ]),
+            Select::make('Only Certain States', 'onlyCertainStates')
+                ->options([
+                    'Yes' => 'Yes',
+                    'No' => 'No'
+                ])
+                ->help('Choose "Yes" to filter states that start with "L"'),
 
             SelectPlus::make('States Lived In', 'statesLivedIn')
-                // ->dependsOn(
-                //     ['onlyCertainStates'],
-                //     function (SelectPlus $field, $request, $formData) {
-                //         if ($formData->onlyCertainStates == 'Yes') {
-                //             $field->optionsQuery(
-                //                 fn ($query) => $query->where('name', 'LIKE', 'L%')
-                //             );
-                //
-                //             // $field->ajaxSearchable(
-                //             //     fn($query, $search) => $query
-                //             //         ->where('name', 'LIKE', "%{$search}%")
-                //             //         ->where('name', 'LIKE', 'N%')
-                //             // );
-                //         }
-                //     }
-                // )
+                ->dependsOn(
+                    ['onlyCertainStates'],
+                    function (SelectPlus $field, NovaRequest $request, FormData $formData) {
+                        // Demonstrate access to both Request and FormData objects
+                        if ($formData->onlyCertainStates == 'Yes') {
+                            $field->optionsQuery(
+                                fn ($query) => $query->where('name', 'LIKE', 'L%')
+                            );
+                            
+                            // You can also access the request object for additional context
+                            if ($request->has('resourceId')) {
+                                // Could modify behavior based on the resource being edited
+                                $field->help('Filtered to states starting with "L" for resource ID: ' . $request->get('resourceId'));
+                            }
+                        } else {
+                            // Reset to show all states when not filtered
+                            $field->help('Showing all available states');
+                        }
+                    }
+                )
                 // ->optionsQuery(function (Builder $query) {
                 //     $query->where('name', 'LIKE', 'C%');
                 // })
@@ -139,6 +145,67 @@ class Person extends Resource
                 ->ajaxSearchable(fn ($query, $search) => $query->where('name', 'LIKE', "%{$search}%")->limit(2))
                 ->placeholder('Type to search')
                 ->help('This is a belongsToMany() relationship in the model'),
+
+            Select::make('Region', 'region')
+                ->options([
+                    'west' => 'West Coast',
+                    'east' => 'East Coast',
+                    'central' => 'Central',
+                ])
+                ->help('Select a region to filter available cities'),
+
+            SelectPlus::make('Cities Visited', 'cities_visited')
+                ->options(\App\Models\City::class)
+                ->dependsOn(
+                    ['region', 'state_born_in'],
+                    function (SelectPlus $field, NovaRequest $request, FormData $formData) {
+                        // Example of depending on multiple fields
+                        $region = $formData->region;
+                        $stateBornIn = $formData->state_born_in;
+                        
+                        if ($region && $stateBornIn) {
+                            $field->optionsQuery(function ($query) use ($region, $stateBornIn) {
+                                // Filter cities based on both region and state
+                                if ($region === 'west') {
+                                    $query->whereHas('state', function ($q) {
+                                        $q->whereIn('code', ['CA', 'WA', 'OR']);
+                                    });
+                                } elseif ($region === 'east') {
+                                    $query->whereHas('state', function ($q) {
+                                        $q->whereIn('code', ['NY', 'FL', 'MA']);
+                                    });
+                                }
+                                
+                                // Further filter by birth state if it's a model
+                                if (is_numeric($stateBornIn)) {
+                                    $query->whereHas('state', function ($q) use ($stateBornIn) {
+                                        $q->where('id', $stateBornIn);
+                                    });
+                                }
+                            });
+                            
+                            $field->help("Showing cities in {$region} region" . ($stateBornIn ? " related to your birth state" : ""));
+                        } elseif ($region) {
+                            $field->optionsQuery(function ($query) use ($region) {
+                                if ($region === 'west') {
+                                    $query->whereHas('state', function ($q) {
+                                        $q->whereIn('code', ['CA', 'WA', 'OR']);
+                                    });
+                                } elseif ($region === 'east') {
+                                    $query->whereHas('state', function ($q) {
+                                        $q->whereIn('code', ['NY', 'FL', 'MA']);
+                                    });
+                                }
+                            });
+                            
+                            $field->help("Showing cities in {$region} region");
+                        } else {
+                            $field->help('Select a region to filter cities');
+                        }
+                    }
+                )
+                ->ajaxSearchable(true)
+                ->help('This field depends on both region and state born in'),
 
             SelectPlus::make('Favorite Coffee', 'favorite_coffee')
                 ->required()

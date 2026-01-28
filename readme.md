@@ -152,3 +152,35 @@ returning a Collection will populate the dropdown:
 ```
 
 ![alt text](https://github.com/ziffmedia/nova-select-plus/raw/master/docs/6-ajaxSearchable.gif "reorder a list")
+
+#### `->dependsOn(array, closure)` - Dependent Fields Support
+
+SelectPlus fully supports Nova's dependent fields functionality, allowing you to dynamically modify field behavior based on the values of other fields in the form:
+
+```php
+use Laravel\Nova\Fields\FormData;
+use Laravel\Nova\Fields\Select;
+use Laravel\Nova\Http\Requests\NovaRequest;
+
+Select::make('Region', 'region')
+    ->options([
+        'west' => 'West Coast',
+        'east' => 'East Coast',
+    ]),
+
+SelectPlus::make('Available States', 'available_states')
+    ->options(State::class)
+    ->dependsOn(['region'], function (SelectPlus $field, NovaRequest $request, FormData $formData) {
+        if ($formData->region === 'west') {
+            $field->optionsQuery(function ($query) {
+                $query->whereIn('code', ['CA', 'WA', 'OR']);
+            });
+        } elseif ($formData->region === 'east') {
+            $field->optionsQuery(function ($query) {
+                $query->whereIn('code', ['NY', 'FL', 'MA']);
+            });
+        }
+    })
+```
+
+The callback receives the field instance, Nova request, and form data, allowing you to modify options, validation rules, help text, and other field properties based on dependent field values. See [docs/dependent-fields.md](docs/dependent-fields.md) for complete documentation and examples.
