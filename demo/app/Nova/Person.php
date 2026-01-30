@@ -108,56 +108,56 @@ class Person extends Resource
                 ->reorderable('order')
                 ->help('This is a belongsToMany() relationship with a pivot attribute for tracking order, and is ajax searchable.'),
 
-            // Select::make('Only Certain States', 'onlyCertainStates')
-            //     ->options([
-            //         'Yes' => 'Yes',
-            //         'No' => 'No'
-            //     ]),
+            Select::make('Only Certain States (Beginning with N)', 'onlyCertainStates')
+                ->options([
+                    'Yes' => 'Yes',
+                    'No' => 'No'
+                ]),
 
             SelectPlus::make('States Lived In', 'statesLivedIn')
-                // ->dependsOn(
-                //     ['onlyCertainStates'],
-                //     function (SelectPlus $field, $request, $formData) {
-                //         if ($formData->onlyCertainStates == 'Yes') {
-                //             $field->optionsQuery(
-                //                 fn ($query) => $query->where('name', 'LIKE', 'L%')
-                //             );
-                //
-                //             // $field->ajaxSearchable(
-                //             //     fn($query, $search) => $query
-                //             //         ->where('name', 'LIKE', "%{$search}%")
-                //             //         ->where('name', 'LIKE', 'N%')
-                //             // );
-                //         }
-                //     }
-                // )
+                ->dependsOn(
+                    ['onlyCertainStates'],
+                    function (SelectPlus $field, $request, $formData) {
+                        if ($formData->onlyCertainStates == 'Yes') {
+                            $field->optionsQuery(
+                                fn ($query) => $query->where('name', 'LIKE', 'N%')
+                            );
+
+                            // $field->ajaxSearchable(
+                            //     fn($query, $search) => $query
+                            //         ->where('name', 'LIKE', "%{$search}%")
+                            //         ->where('name', 'LIKE', 'N%')
+                            // );
+                        }
+                    }
+                )
                 // ->optionsQuery(function (Builder $query) {
                 //     $query->where('name', 'LIKE', 'C%');
                 // })
-                // ->label(fn ($state) => $state->id . ' - ' . $state->name)
-                // ->ajaxSearchable(true)
+                ->label(fn ($state) => $state->id . ' - ' . $state->name)
+                ->ajaxSearchable(true)
                 ->ajaxSearchable(fn ($query, $search) => $query->where('name', 'LIKE', "%{$search}%")->limit(2))
                 ->placeholder('Type to search')
                 ->help('This is a belongsToMany() relationship in the model'),
 
-            SelectPlus::make('Favorite Coffee', 'favorite_coffee')
-                ->required()
-                ->options(function ($request = null) {
-                    $coffees = Http::get('https://api.sampleapis.com/coffee/hot')
-                        ->collect()
-                        ->map(fn ($coffee) => ['value' => $coffee['id'], 'label' => $coffee['title']]);
-
-                    if ($request->has('search')) {
-                        $coffees = $coffees->filter(fn ($coffee) => str_contains($coffee['label'], $request->get('search')));
-                    }
-
-                    return $coffees->values();
-                })
-                ->fillUsing(function ($request, $model, $attribute) {
-                    $model->favorite_coffee = collect(json_decode($request->get('favorite_coffee'), true))
-                        ->pluck('label')
-                        ->toArray();
-                })
+            // SelectPlus::make('Favorite Coffee', 'favorite_coffee')
+            //     ->required()
+            //     ->options(function ($request = null) {
+            //         $coffees = Http::get('https://api.sampleapis.com/coffee/hot')
+            //             ->collect()
+            //             ->map(fn ($coffee) => ['value' => $coffee['id'], 'label' => $coffee['title']]);
+            //
+            //         if ($request->has('search')) {
+            //             $coffees = $coffees->filter(fn ($coffee) => str_contains($coffee['label'], $request->get('search')));
+            //         }
+            //
+            //         return $coffees->values();
+            //     })
+            //     ->fillUsing(function ($request, $model, $attribute) {
+            //         $model->favorite_coffee = collect(json_decode($request->get('favorite_coffee'), true))
+            //             ->pluck('label')
+            //             ->toArray();
+            //     })
                 // ->ajaxSearchable(true)
         ];
     }
