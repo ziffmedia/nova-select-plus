@@ -1,0 +1,19 @@
+name: Package Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+    branches-ignore:
+      - master
+  delete:
+
+jobs:
+  release:
+    runs-on: arm-ubuntu-latest
+    steps:
+      - uses: ziffmedia/php-packages/actions/package-release@v0
+        with:
+          package_name: nova-select-plus
+          artifactory_username: ${{ secrets.ZMG_ARTIFACTORY_DOCKER_USERNAME }}
+          artifactory_password: ${{ secrets.ZMG_ARTIFACTORY_DOCKER_PASSWORD }}
