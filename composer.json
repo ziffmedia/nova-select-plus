@@ -25,5 +25,14 @@
                 "ZiffMedia\\NovaSelectPlus\\FieldServiceProvider"
             ]
         }
+    },
+    "require-dev": {
+        "orchestra/testbench": "^10.10",
+        "phpunit/phpunit": "^12.5"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
     }
 }

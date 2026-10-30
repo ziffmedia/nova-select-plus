@@ -17,7 +17,7 @@ class FieldServiceProvider extends ServiceProvider
         });
 
         Route::group(
-            ['middleware' => 'nova', 'prefix' => 'nova-vendor/select-plus', 'namespace' => __NAMESPACE__],
+            ['middleware' => 'nova:api', 'prefix' => 'nova-vendor/select-plus', 'namespace' => __NAMESPACE__],
             function ($route) {
                 $route->get('/{resource}/{relationship}', 'Controller@options');
             }

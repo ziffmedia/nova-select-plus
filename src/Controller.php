@@ -10,6 +10,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Enumerable;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\Nova;
 use Laravel\Nova\Panel;
 use Laravel\Scout\Builder as ScoutBuilder;
 use RuntimeException;
@@ -26,6 +27,8 @@ class Controller
     public function options(NovaRequest $request, $resourceName, $relationship)
     {
         $resource = $request->newResource();
+
+        abort_unless($resource::authorizedToViewAny($request), 403);
 
         $field = null;
 
@@ -49,11 +52,17 @@ class Controller
             throw new RuntimeException('A field was not identified, if this field is nested, use withFieldId($uniqueName) so options can be loaded.');
         }
 
+        abort_unless($field->authorizedToSee($request), 403);
+
         $model = $resource->model();
 
         if ($model->isRelation($field->attribute)) {
+            $related = $model->{$field->attribute}()->getRelated();
+
+            $this->authorizeRelatedModel($request, $related::class);
+
             $result = $this->processQuery(
-                $model->{$field->attribute}()->getRelated()->newQuery(),
+                $related->newQuery(),
                 $request,
                 $field
             )->get();
@@ -66,6 +75,8 @@ class Controller
         } elseif ($field->options && (is_array($field->options) || ($field->options instanceof Enumerable))) {
             $result = Collection::wrap($field->options);
         } elseif (class_exists($field->options) && is_subclass_of($field->options, Model::class)) {
+            $this->authorizeRelatedModel($request, $field->options);
+
             $result = $this->processQuery(
                 (new $field->options)->newQuery(),
                 $request,
@@ -78,6 +89,17 @@ class Controller
         }
 
         return response()->json($field->mapValuesToSelectionOptions($result));
+    }
+
+    /**
+     * Options read from a model must not be readable by users who cannot view that model's Nova resource. A model
+     * without a Nova resource has nothing further to check.
+     */
+    protected function authorizeRelatedModel(NovaRequest $request, string $modelClass): void
+    {
+        $resourceClass = Nova::resourceForModel($modelClass);
+
+        abort_if($resourceClass && ! $resourceClass::authorizedToViewAny($request), 403);
     }
 
     protected function processQuery(Builder $query, NovaRequest $request, SelectPlus $field): Builder|ScoutBuilder
